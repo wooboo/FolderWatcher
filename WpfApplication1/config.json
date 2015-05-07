@@ -1,0 +1,14 @@
+﻿[
+    {
+        "Path": "~\\Downloads",
+        "Filter": "*.*",
+        "Plugins": [
+            {
+                "Name": "DeleteFilePlugin",
+                "Settings": { 
+                    "Alert":  true
+                }
+            }
+        ]
+    }
+]
