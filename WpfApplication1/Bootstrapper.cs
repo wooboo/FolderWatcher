@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.Composition.Hosting;
 using System.Windows;
+using FolderWatcher.Shell;
 using Microsoft.Practices.Prism.MefExtensions;
 using Microsoft.Practices.Prism.Modularity;
 
-namespace WpfApplication1.Shell
+namespace FolderWatcher
 {
     public class Bootstrapper : MefBootstrapper
     {

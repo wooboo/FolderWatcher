@@ -1,8 +1,11 @@
-namespace WpfApplication1.Watcher
+using FolderWatcher.Services;
+
+namespace FolderWatcher.Watcher
 {
     public interface IPlugin
     {
+        string Name { get; }
         void Init(object settings);
-        string OnFile(string path);
+        void OnFile(IFileSystemService fileSystemService,ChangedFile file);
     }
 }

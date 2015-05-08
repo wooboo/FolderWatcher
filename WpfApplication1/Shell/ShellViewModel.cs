@@ -1,30 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FolderWatcher.Services;
+using FolderWatcher.Watcher;
 using Microsoft.Practices.Prism.Mvvm;
-using WpfApplication1.Services;
-using WpfApplication1.Watcher;
 
-namespace WpfApplication1.Shell
+namespace FolderWatcher.Shell
 {
     [Export]
     public class ShellViewModel:BindableBase
     {
-        private readonly ISomeService _someService;
-        private ObservableCollection<FolderWatcher> _watchers;
+        private readonly IFileSystemService _fileSystemService;
+        private ObservableCollection<Folder> _watchers;
 
         [ImportingConstructor]
-        public ShellViewModel(ISomeService someService)
+        public ShellViewModel(IFileSystemService fileSystemService)
         {
-            _someService = someService;
-            this.Watchers = _someService.Watchers;
+            _fileSystemService = fileSystemService;
+            this.Watchers = _fileSystemService.Watchers;
         }
 
-        public ObservableCollection<FolderWatcher> Watchers
+        public ObservableCollection<Folder> Watchers
         {
             get { return _watchers; }
             set { SetProperty(ref _watchers, value); }

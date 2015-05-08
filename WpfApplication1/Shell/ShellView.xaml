@@ -1,30 +1,30 @@
-﻿<Window x:Class="WpfApplication1.Shell.ShellView"
+﻿<Window x:Class="FolderWatcher.Shell.ShellView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:watcher="clr-namespace:WpfApplication1.Watcher"
-        xmlns:model="clr-namespace:WpfApplication1.Model"
+        xmlns:watcher="clr-namespace:FolderWatcher.Watcher"
         Title="ShellView" Height="350" Width="525">
     <TreeView ItemsSource="{Binding Watchers}">
         <TreeView.Resources>
-            <HierarchicalDataTemplate 
-      DataType="{x:Type watcher:FolderWatcher}" 
-      ItemsSource="{Binding Folder.Plugins}"
-      >
+            <HierarchicalDataTemplate
+                DataType="{x:Type watcher:Folder}"
+                ItemsSource="{Binding Files}">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Folder.Path}" />
-                    <TextBlock Text="{Binding Folder.Filter}" />
+                    <TextBlock Text="{Binding Directory.Path}" />
+                    <TextBlock Text="{Binding Directory.Filter}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
 
             <DataTemplate DataType="{x:Type watcher:ChangedFile}">
-                <StackPanel Orientation="Horizontal">
+                <Grid>
                     <TextBlock Text="{Binding Name}" />
-                </StackPanel>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type model:Plugin}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Name}" />
-                </StackPanel>
+                    <ItemsControl ItemsSource="{Binding PluginParts}" HorizontalAlignment="Right">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"></StackPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </Grid>
             </DataTemplate>
         </TreeView.Resources>
     </TreeView>

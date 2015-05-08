@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Class="FolderWatcher.Plugins.DeleteFile.Resources"
+                    xmlns:deleteFile="clr-namespace:FolderWatcher.Plugins.DeleteFile">
+    <DataTemplate DataType="{x:Type deleteFile:DeleteFilePluginPart}">
+        <Button Command="{Binding Delete}" CommandParameter="{Binding File}">Delete</Button>
+    </DataTemplate>
+</ResourceDictionary>

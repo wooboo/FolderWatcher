@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.ServiceLocation;
-using WpfApplication1.Shell;
 
-namespace WpfApplication1
+namespace FolderWatcher
 {
     /// <summary>
     /// Interaction logic for App.xaml
