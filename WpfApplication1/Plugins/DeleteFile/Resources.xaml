@@ -3,6 +3,10 @@
                     x:Class="FolderWatcher.Plugins.DeleteFile.Resources"
                     xmlns:deleteFile="clr-namespace:FolderWatcher.Plugins.DeleteFile">
     <DataTemplate DataType="{x:Type deleteFile:DeleteFilePluginPart}">
-        <Button Command="{Binding Delete}" CommandParameter="{Binding File}">Delete</Button>
+        <StackPanel Orientation="Horizontal">
+            <Button Command="{Binding Delete}" CommandParameter="{Binding File}">Delete</Button>
+            <Button Command="{Binding DelayedDelete}" CommandParameter="{Binding File}">Delete in 10 minutes</Button>
+        </StackPanel>
+
     </DataTemplate>
 </ResourceDictionary>

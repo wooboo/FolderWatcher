@@ -21,7 +21,7 @@ namespace FolderWatcher.Watcher
             _path = Environment.ExpandEnvironmentVariables(path.Replace("~", "%USERPROFILE%"));
             _fsw = new FileSystemWatcher(_path);
             //_fsw.Error += _fsw_Error;
-            //_fsw.Deleted += _fsw_Deleted;
+            _fsw.Deleted += _fsw_Deleted;
             _fsw.Created += _fsw_Created;
             //_fsw.Changed += _fsw_Changed;
             Files = new ObservableCollection<ChangedFile>();
@@ -72,7 +72,11 @@ namespace FolderWatcher.Watcher
 
         private void _fsw_Deleted(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine(e.Name);
+            var file = Files.SingleOrDefault(o => o.FullPath == e.FullPath);
+            if (file != null)
+            {
+                App.Current.Dispatcher.Invoke(() => { Files.Remove(file); });
+            }
         }
 
         private void _fsw_Error(object sender, ErrorEventArgs e)

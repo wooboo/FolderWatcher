@@ -15,7 +15,7 @@ namespace FolderWatcher.Services
             _file = file;
         }
 
-        public Task<string> Call(string action, params string[] args)
+        public Task<string> Call(string action, params object[] args)
         {
             return ServiceLocator.Current.GetInstance<IFileActionPlugin>(action).Execute(_file.FullPath, args);
         }

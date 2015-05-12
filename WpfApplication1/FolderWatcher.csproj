@@ -91,9 +91,12 @@
     <Compile Include="Plugins\DeleteFile\Resources.xaml.cs">
       <DependentUpon>Resources.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\DelayedDeleteFileActionPlugin.cs" />
+    <Compile Include="Services\DelayedFileDeletion.cs" />
     <Compile Include="Services\FileSystemService.cs" />
     <Compile Include="Services\DeleteFileActionPlugin.cs" />
     <Compile Include="Services\FileAction.cs" />
+    <Compile Include="Services\IDelayedActionPlugin.cs" />
     <Compile Include="Services\IFileActionPlugin.cs" />
     <Compile Include="Services\IFileSystemService.cs" />
     <Compile Include="Shell\ShellViewModel.cs" />

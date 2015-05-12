@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace FolderWatcher.Services
 {
-    [Export("delete", typeof (IFileActionPlugin))]
+    [Export("delete", typeof(IFileActionPlugin))]
     public class DeleteFileActionPlugin : IFileActionPlugin
     {
-        public Task<string> Execute(string file, params string[] args)
+        public Task<string> Execute(string file, params object[] args)
         {
             File.Delete(file);
             return Task.FromResult(string.Empty);

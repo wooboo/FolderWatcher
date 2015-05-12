@@ -17,6 +17,22 @@ namespace FolderWatcher.Shell
         {
             _fileSystemService = fileSystemService;
             this.Watchers = _fileSystemService.Watchers;
+            //this.Watchers = new ObservableCollection<Folder>();
+            //this.Watchers.Add(new Folder("~\\Downloads","*.*")
+            //{
+            //    Files = new ObservableCollection<ChangedFile>
+            //    {
+            //        new ChangedFile("~\\Downloads\\aaa.txt"),
+            //        new ChangedFile("~\\Downloads\\aaa.txt"),
+            //        new ChangedFile("~\\Downloads\\aaa.txt"),
+            //        new ChangedFile("~\\Downloads\\aaa.txt"),
+            //        new ChangedFile("~\\Downloads\\aaa.txt"),
+            //        new ChangedFile("~\\Downloads\\aaa.txt"),
+            //        new ChangedFile("~\\Downloads\\aaa.txt"),
+            //        new ChangedFile("~\\Downloads\\aaa.txt"),
+            //        new ChangedFile("~\\Downloads\\aaa.txt"),
+            //    }
+            //});
         }
 
         public ObservableCollection<Folder> Watchers

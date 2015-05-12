@@ -4,6 +4,6 @@ namespace FolderWatcher.Services
 {
     public interface IFileActionPlugin
     {
-        Task<string> Execute(string file, params string[] args);
+        Task<string> Execute(string file, params object[] args);
     }
 }
