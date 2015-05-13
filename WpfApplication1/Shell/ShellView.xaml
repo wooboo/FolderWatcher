@@ -138,8 +138,8 @@
                 
                 >
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Directory.Path}" />
-                            <TextBlock Text="{Binding Directory.Filter}" />
+                            <TextBlock Text="{Binding DirectorySettings.Path}" />
+                            <TextBlock Text="{Binding DirectorySettings.Filter}" />
                         </StackPanel>
                 </HierarchicalDataTemplate>
 

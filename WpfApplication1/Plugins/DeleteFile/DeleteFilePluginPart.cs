@@ -7,26 +7,26 @@ using Microsoft.Practices.Prism.Commands;
 namespace FolderWatcher.Plugins.DeleteFile
 {
     public class DeleteFilePluginPart : IPluginPart {
-        private readonly IFileSystemService _fileSystemService;
+        private readonly DeleteFilePlugin _plugin;
         public ChangedFile File { get; private set; }
 
-        public DeleteFilePluginPart(IFileSystemService fileSystemService, ChangedFile file)
+        public DeleteFilePluginPart(DeleteFilePlugin plugin, ChangedFile file)
         {
-            _fileSystemService = fileSystemService;
+            _plugin = plugin;
             File = file;
             Delete = new DelegateCommand<ChangedFile>(DeleteFile);
             DelayedDelete = new DelegateCommand<ChangedFile>(DelayedDeleteFile);
         }
 
-        private async void DelayedDeleteFile(ChangedFile changedFile)
+        private void DelayedDeleteFile(ChangedFile changedFile)
         {
-            await _fileSystemService.ForFile(changedFile).Call("delayed_delete", TimeSpan.FromMinutes(1));
+             _plugin.DelayedDelete(changedFile, TimeSpan.FromMinutes(3));
             
         }
 
         private async void DeleteFile(ChangedFile changedFile)
         {
-            await _fileSystemService.ForFile(changedFile).Call("delete");
+            await _plugin.Delete(changedFile);
         }
 
         public ICommand Delete { get; set; }

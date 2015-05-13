@@ -9,41 +9,81 @@ using Microsoft.Practices.ServiceLocation;
 
 namespace FolderWatcher.Watcher
 {
+
     public class Folder
     {
         private readonly IFileSystemService _fileSystemService;
         private readonly FileSystemWatcher _fsw;
         private readonly string _path;
-        private readonly IList<IPlugin> _plugins = new List<IPlugin>();
+        private readonly string _configPath;
+        private readonly IEnumerable<IPlugin> _plugins;
 
-        public Folder(string path, string filter = "*.*")
+        public Folder(IFileSystemService fileSystemService, IPluginFactory[] plugins, DirectorySettings directorySettings)
         {
-            _path = Environment.ExpandEnvironmentVariables(path.Replace("~", "%USERPROFILE%"));
-            _fsw = new FileSystemWatcher(_path);
-            //_fsw.Error += _fsw_Error;
-            _fsw.Deleted += _fsw_Deleted;
-            _fsw.Created += _fsw_Created;
-            //_fsw.Changed += _fsw_Changed;
+            _path = EnsureWatchedPath(directorySettings.Path);
+            _configPath = EnsureConfigPath(_path);
+            _plugins = LoadPlugins(_configPath, plugins).ToList();
             Files = new ObservableCollection<ChangedFile>();
+
+            _fileSystemService = fileSystemService;
+            DirectorySettings = directorySettings;
+
+
+
+            LoadFiles(_path);
+            _fsw = CreateWatcher(_path);
         }
 
-        public Folder(IFileSystemService fileSystemService, IPlugin[] plugins, Model.Directory directory) : this(directory.Path, directory.Filter)
+        private void LoadFiles(string path)
         {
-            _fileSystemService = fileSystemService;
-            Directory = directory;
-            foreach (var pluginSettings in directory.Plugins)
-            {
-                var plugin = plugins.First(o=>o.Name == pluginSettings.Name);
-                _plugins.Add(plugin);
-                plugin.Init(pluginSettings.Settings);
-            }
-            foreach (var file in System.IO.Directory.GetFiles(_path))
+            foreach (var file in System.IO.Directory.GetFiles(path))
             {
                 AddFile(file);
             }
         }
 
-        public Model.Directory Directory { get; private set; }
+        private IEnumerable<IPlugin> LoadPlugins(string configPath, IPluginFactory[] pluginFactories)
+        {
+            foreach (var pluginFactory in pluginFactories)
+            {
+                IPlugin plugin;
+                if (pluginFactory.TryCreatePlugin(configPath, out plugin))
+                {
+                    yield return plugin;
+                }
+            }
+        }
+
+        private string EnsureWatchedPath(string path)
+        {
+            path = Environment.ExpandEnvironmentVariables(path.Replace("~", "%USERPROFILE%"));
+
+            return path;
+        }
+
+        private FileSystemWatcher CreateWatcher(string path)
+        {
+            var fsw = new FileSystemWatcher(path);
+            //_fsw.Error += _fsw_Error;
+            fsw.Deleted += _fsw_Deleted;
+            fsw.Created += _fsw_Created;
+            //_fsw.Changed += _fsw_Changed;
+            return fsw;
+        }
+
+        private string EnsureConfigPath(string path)
+        {
+            var configPath = Path.Combine(path, ".watcher");
+            if (!Directory.Exists(configPath))
+            {
+                Directory.CreateDirectory(configPath);
+                var directoryInfo = new DirectoryInfo(configPath);
+                directoryInfo.Attributes = directoryInfo.Attributes & FileAttributes.Hidden;
+            }
+            return configPath;
+        }
+
+        public Model.DirectorySettings DirectorySettings { get; private set; }
         public ObservableCollection<ChangedFile> Files { get; set; }
 
         private void _fsw_Changed(object sender, FileSystemEventArgs e)
@@ -59,15 +99,12 @@ namespace FolderWatcher.Watcher
 
         private void AddFile(string path)
         {
-            if (!string.IsNullOrEmpty(path))
+            var changedFile = new ChangedFile(path);
+            foreach (var plugin in _plugins)
             {
-                var changedFile = new ChangedFile(path);
-                foreach (var plugin in _plugins)
-                {
-                    plugin.OnFile(_fileSystemService, changedFile);
-                }
-                App.Current.Dispatcher.Invoke(() => { Files.Add(changedFile); });
+                plugin.OnFile(_fileSystemService, changedFile);
             }
+            App.Current.Dispatcher.Invoke(() => { Files.Add(changedFile); });
         }
 
         private void _fsw_Deleted(object sender, FileSystemEventArgs e)
@@ -92,6 +129,18 @@ namespace FolderWatcher.Watcher
         public void Stop()
         {
             _fsw.EnableRaisingEvents = false;
+        }
+
+        public void Sweep()
+        {
+            foreach (var plugin in _plugins)
+            {
+                var periodialPlugin = plugin as IPeriodocalPlugin;
+                if (periodialPlugin!=null)
+                {
+                    periodialPlugin.Sweep();
+                }
+            }
         }
     }
 }

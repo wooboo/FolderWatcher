@@ -1,38 +1,56 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.IO.IsolatedStorage;
+using System.Threading.Tasks;
 using FolderWatcher.Services;
 using FolderWatcher.Watcher;
 
 namespace FolderWatcher.Plugins.DeleteFile
 {
-    [Export(typeof(IPlugin))]
-    public class DeleteFilePlugin:IPlugin
+    public class DeleteFilePlugin : IPlugin, IPeriodocalPlugin
     {
-        
-        public IList<FileState> Files { get; set; }
+        private readonly DeleteFilePluginConfig _config;
+        private readonly IFileSystemService _fileSystemService;
 
-        public string Name { get { return GetType().Name; } }
-
-        public void Init(dynamic settings)
+        public DeleteFilePlugin(DeleteFilePluginConfig config, IFileSystemService fileSystemService)
         {
-            IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
-       
+            _config = config;
+            _fileSystemService = fileSystemService;
         }
 
         public void OnFile(IFileSystemService fileSystemService, ChangedFile file)
         {
-            file.PluginParts.Add(new DeleteFilePluginPart(fileSystemService, file));
+            file.PluginParts.Add(new DeleteFilePluginPart(this, file));
         }
 
-    }
+        public void DelayedDelete(ChangedFile changedFile, TimeSpan fromMinutes)
+        {
+            _config.FileStates.Add(new FileState
+            {
+                CreateDate = DateTime.Now,
+                Path = changedFile.FullPath,
+                DeleteAfter = fromMinutes
+            });
+            _config.Save();
+        }
 
-    public class FileState
-    {
-        public string Path { get; set; }
-        public DateTime CreateDate { get; set; }
-        public TimeSpan DeleteAfter { get; set; }
+        public Task Delete(ChangedFile changedFile)
+        {
+            return _fileSystemService.ForFile(changedFile.FullPath).Call("delete");
+        }
+
+        public void Sweep()
+        {
+            var fileStates = _config.FileStates;
+            for (int i = 0; i < fileStates.Count; i++)
+            {
+                var deletion = fileStates[i];
+                if (deletion.CreateDate + deletion.DeleteAfter <= DateTime.Now)
+                {
+                    _fileSystemService.ForFile(deletion.Path).Call("delete");
+                    fileStates.RemoveAt(i);
+                    i--;
+                }
+            }
+            _config.Save();
+        }
     }
 }

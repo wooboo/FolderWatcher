@@ -10,8 +10,8 @@ namespace FolderWatcher.Model
     {
         public Configuration()
         {
-            Folders = JsonConvert.DeserializeObject<List<Directory>>(File.ReadAllText(@"config.json"));
+            Folders = JsonConvert.DeserializeObject<List<DirectorySettings>>(File.ReadAllText(@"config.json"));
         }
-        public IList<Directory> Folders { get; set; }
+        public IList<DirectorySettings> Folders { get; set; }
     }
 }

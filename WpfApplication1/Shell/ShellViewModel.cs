@@ -9,14 +9,14 @@ namespace FolderWatcher.Shell
     [Export]
     public class ShellViewModel:BindableBase
     {
-        private readonly IFileSystemService _fileSystemService;
+        private readonly IWatcherService _watcherService;
         private ObservableCollection<Folder> _watchers;
 
         [ImportingConstructor]
-        public ShellViewModel(IFileSystemService fileSystemService)
+        public ShellViewModel(IWatcherService watcherService)
         {
-            _fileSystemService = fileSystemService;
-            this.Watchers = _fileSystemService.Watchers;
+            _watcherService = watcherService;
+            this.Watchers = _watcherService.Watchers;
             //this.Watchers = new ObservableCollection<Folder>();
             //this.Watchers.Add(new Folder("~\\Downloads","*.*")
             //{
