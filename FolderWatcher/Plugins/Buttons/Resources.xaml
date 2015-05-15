@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Class="FolderWatcher.Plugins.Buttons.Resources"
+                    xmlns:Buttons="clr-namespace:FolderWatcher.Plugins.Buttons">
+    <DataTemplate DataType="{x:Type Buttons:ButtonsPluginPart}">
+        <StackPanel Orientation="Horizontal">
+            <Button Command="{Binding Button}" CommandParameter="{Binding File}">Button</Button>
+        </StackPanel>
+
+    </DataTemplate>
+</ResourceDictionary>

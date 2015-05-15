@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FolderWatcher.Plugins.DeleteFile
+namespace FolderWatcher.Plugins.Buttons
 {
     /// <summary>
     /// Interaction logic for Resources.xaml

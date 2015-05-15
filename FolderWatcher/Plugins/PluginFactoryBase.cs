@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using FolderWatcher.Plugins.DeleteFile;
 using FolderWatcher.Watcher;
 
 namespace FolderWatcher.Plugins

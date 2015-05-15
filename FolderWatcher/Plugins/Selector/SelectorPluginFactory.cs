@@ -1,8 +1,7 @@
 using System.ComponentModel.Composition;
-using FolderWatcher.Services;
 using FolderWatcher.Watcher;
 
-namespace FolderWatcher.Plugins.PluginSelector
+namespace FolderWatcher.Plugins.Selector
 {
     [Export(typeof(IPluginFactory))]
     public class SelectorPluginFactory : PluginFactoryBase<SelectorPlugin,SelectorPluginConfig>

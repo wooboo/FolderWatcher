@@ -4,7 +4,6 @@ using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using FolderWatcher.Plugins.DeleteFile;
 using FolderWatcher.Watcher;
 using Microsoft.Practices.Prism.Mvvm;
 using ResourceDictionary = System.Windows.ResourceDictionary;

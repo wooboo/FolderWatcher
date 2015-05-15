@@ -128,7 +128,7 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <Border BorderThickness="2" BorderBrush="Blue" HorizontalAlignment="Stretch">
+    <StackPanel HorizontalAlignment="Stretch">
 
         <TreeView BorderBrush="Green" BorderThickness="2" ItemsSource="{Binding Watchers}" Grid.IsSharedSizeScope="true" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ItemContainerStyle="{DynamicResource TreeViewItemStyle1}" >
             <TreeView.Resources>
@@ -162,5 +162,6 @@
                 </DataTemplate>
             </TreeView.Resources>
         </TreeView>
-    </Border>
+        <Button>Setup Downloads</Button>
+    </StackPanel>
 </Window>

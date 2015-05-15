@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using FolderWatcher.Model;
 using FolderWatcher.Services;
+using FolderWatcher.Services.Events;
 using Microsoft.Practices.ServiceLocation;
 
 namespace FolderWatcher.Watcher
@@ -23,7 +24,7 @@ namespace FolderWatcher.Watcher
             _path = EnsureWatchedPath(directorySettings.Path);
             _configPath = EnsureConfigPath(_path);
             _plugins = LoadPlugins(_configPath, plugins).ToList();
-            Files = new ObservableCollection<ChangedFile>();
+            Files = new ObservableCollection<FileSystemItem>();
 
             _fileSystemService = fileSystemService;
             DirectorySettings = directorySettings;
@@ -81,7 +82,7 @@ namespace FolderWatcher.Watcher
         }
 
         public Model.DirectorySettings DirectorySettings { get; private set; }
-        public ObservableCollection<ChangedFile> Files { get; set; }
+        public ObservableCollection<FileSystemItem> Files { get; set; }
 
         private void _fsw_Changed(object sender, FileSystemEventArgs e)
         {
@@ -96,7 +97,7 @@ namespace FolderWatcher.Watcher
 
         private void AddFile(string path)
         {
-            var changedFile = new ChangedFile(path);
+            var changedFile = new FileSystemItem(path);
             foreach (var plugin in _plugins)
             {
                 plugin.OnFile(changedFile);

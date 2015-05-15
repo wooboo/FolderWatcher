@@ -1,12 +1,9 @@
-using System.ComponentModel.Composition;
-using System.IO;
 using System.Text.RegularExpressions;
-using FolderWatcher.Plugins.DeleteFile;
-using FolderWatcher.Services;
+using FolderWatcher.Services.Events;
 using FolderWatcher.Watcher;
 using Microsoft.Practices.ServiceLocation;
 
-namespace FolderWatcher.Plugins.PluginSelector
+namespace FolderWatcher.Plugins.Selector
 {
     public class SelectorPlugin : IPlugin
     {
@@ -17,7 +14,7 @@ namespace FolderWatcher.Plugins.PluginSelector
             _config = config;
         }
 
-        public void OnFile(ChangedFile file)
+        public void OnFile(FileSystemItem file)
         {
             var factories = ServiceLocator.Current.GetAllInstances<IPluginFactory>();
             foreach (var masks in _config.Masks)

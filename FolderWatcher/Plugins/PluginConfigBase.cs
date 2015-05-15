@@ -1,7 +1,7 @@
 using System.IO;
 using Newtonsoft.Json;
 
-namespace FolderWatcher.Plugins.DeleteFile
+namespace FolderWatcher.Plugins
 {
     public abstract class PluginConfigBase
     {

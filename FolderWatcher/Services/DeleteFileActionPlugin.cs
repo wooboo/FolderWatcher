@@ -1,6 +1,7 @@
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading.Tasks;
+using FolderWatcher.Services.Events;
 using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace FolderWatcher.Services
