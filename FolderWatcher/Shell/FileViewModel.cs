@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
+using FolderWatcher.Watcher;
+using Microsoft.Practices.Prism.Mvvm;
 
-namespace FolderWatcher.Watcher
+namespace FolderWatcher.Shell
 {
-    public class ChangedFile
+    public class FileViewModel:BindableBase
     {
-        public ChangedFile(string path)
+        public FileViewModel(string path)
         {
             FullPath = path;
             Name = Path.GetFileName(FullPath);

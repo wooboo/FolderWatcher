@@ -5,6 +5,6 @@ namespace FolderWatcher.Services
 {
     public interface IWatcherService
     {
-        ObservableCollection<Folder> Watchers { get; }
+        ObservableCollection<Folder> Folders { get; }
     }
 }

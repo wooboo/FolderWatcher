@@ -3,9 +3,17 @@
                     x:Class="FolderWatcher.Plugins.Buttons.Resources"
                     xmlns:Buttons="clr-namespace:FolderWatcher.Plugins.Buttons">
     <DataTemplate DataType="{x:Type Buttons:ButtonsPluginPart}">
-        <StackPanel Orientation="Horizontal">
-            <Button Command="{Binding Button}" CommandParameter="{Binding File}">Button</Button>
-        </StackPanel>
-
+        <ItemsControl ItemsSource="{Binding Actions}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Command="{Binding DataContext.ExecuteCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Content="{Binding Name}" ></Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"></StackPanel>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </DataTemplate>
 </ResourceDictionary>

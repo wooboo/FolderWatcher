@@ -8,7 +8,19 @@ namespace FolderWatcher.Plugins
         where TPlugin: IPlugin 
         where TConfig : PluginConfigBase
     {
-        public string Name => typeof (TPlugin).Name;
+        public string Name
+        {
+            get
+            {
+                var name = typeof (TPlugin).Name;
+                if (name.EndsWith("Plugin"))
+                {
+                    name = name.Replace("Plugin", "");
+                }
+                return name;
+            }
+        }
+
         public IEnumerable<IPlugin> LoadPlugins(string path)
         {
             var configFiles = Directory.GetFiles(path, Name + ".*.json");

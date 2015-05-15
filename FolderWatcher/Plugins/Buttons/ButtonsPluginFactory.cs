@@ -2,6 +2,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using FolderWatcher.Services;
 using FolderWatcher.Watcher;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Newtonsoft.Json;
 
 namespace FolderWatcher.Plugins.Buttons
@@ -9,11 +10,12 @@ namespace FolderWatcher.Plugins.Buttons
     [Export(typeof(IPluginFactory))]
     public class ButtonsPluginFactory : PluginFactoryBase<ButtonsPlugin, ButtonsPluginConfig>
     {
-        private readonly IFileSystemService _fileSystemService;
+        private readonly IEventAggregator _eventAggregator;
+
         [ImportingConstructor]
-        public ButtonsPluginFactory(IFileSystemService fileSystemService)
+        public ButtonsPluginFactory(IEventAggregator eventAggregator)
         {
-            _fileSystemService = fileSystemService;
+            _eventAggregator = eventAggregator;
         }
 
         protected override ButtonsPluginConfig CreateConfig(string path)
@@ -23,7 +25,7 @@ namespace FolderWatcher.Plugins.Buttons
 
         protected override ButtonsPlugin CreatePlugin(ButtonsPluginConfig config)
         {
-            return new ButtonsPlugin(config, _fileSystemService);
+            return new ButtonsPlugin(config, _eventAggregator);
         }
     }
 }

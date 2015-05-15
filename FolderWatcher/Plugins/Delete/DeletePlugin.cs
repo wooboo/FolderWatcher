@@ -17,9 +17,14 @@ namespace FolderWatcher.Plugins.Delete
             _fileSystemService = fileSystemService;
         }
 
-        public void OnFile(FileSystemItem file)
+        public void OnFileCreated(FileChangeInfo file)
         {
             _fileSystemService.ForFile(file.FullPath).Call("delete");
+        }
+
+        public void OnFileDeleted(FileChangeInfo file)
+        {
+            
         }
     }
 }

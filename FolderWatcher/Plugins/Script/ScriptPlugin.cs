@@ -15,7 +15,7 @@ namespace FolderWatcher.Plugins.Script
             _config = config;
         }
 
-        public void OnFile(FileSystemItem file)
+        public void OnFileCreated(FileChangeInfo file)
         {
             ProcessStartInfo processStartInfo = null;
             var fileName = _config.FileName;
@@ -31,5 +31,9 @@ namespace FolderWatcher.Plugins.Script
             process.WaitForExit();
         }
 
+        public void OnFileDeleted(FileChangeInfo file)
+        {
+            
+        }
     }
 }

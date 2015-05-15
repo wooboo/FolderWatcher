@@ -5,6 +5,7 @@ namespace FolderWatcher.Watcher
 {
     public interface IPlugin
     {
-        void OnFile(FileSystemItem file);
+        void OnFileCreated(FileChangeInfo file);
+        void OnFileDeleted(FileChangeInfo file);
     }
 }

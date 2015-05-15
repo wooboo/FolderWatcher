@@ -87,6 +87,7 @@
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\DirectorySettings.cs" />
     <Compile Include="Model\Plugin.cs" />
+    <Compile Include="Plugins\Buttons\AddPluginPartEvent.cs" />
     <Compile Include="Plugins\Delay\DelayPlugin.cs" />
     <Compile Include="Plugins\Delay\DelayPluginConfig.cs" />
     <Compile Include="Plugins\Delay\DelayPluginFactory.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="Plugins\Selector\SelectorPluginConfig.cs" />
     <Compile Include="Plugins\Selector\SelectorPluginFactory.cs" />
     <Compile Include="Services\DelayedFileDeletion.cs" />
-    <Compile Include="Services\Events\FileSystemItem.cs" />
+    <Compile Include="Services\Events\FileChangeInfo.cs" />
     <Compile Include="Services\Events\FileDeletedEvent.cs" />
     <Compile Include="Services\Events\FilesEvent.cs" />
     <Compile Include="Services\Events\FileSystemChangeSet.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="Services\IFileSystemService.cs" />
     <Compile Include="Shell\ShellViewModel.cs" />
     <Compile Include="Plugins\Delete\DeletePlugin.cs" />
-    <Compile Include="Shell\ChangedFile.cs" />
+    <Compile Include="Shell\FileViewModel.cs" />
     <Compile Include="Watcher\IPlugin.cs" />
     <Compile Include="Watcher\IPluginFactory.cs" />
     <Compile Include="Watcher\IPluginPart.cs" />

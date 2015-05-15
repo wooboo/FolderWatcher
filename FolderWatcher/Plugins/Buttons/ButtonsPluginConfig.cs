@@ -9,8 +9,7 @@ namespace FolderWatcher.Plugins.Buttons
         public ButtonsPluginConfig(string path) : base(path)
         {
         }
+        public IDictionary<string, string> Buttons { get; set; } = new Dictionary<string, string>();
 
-        public IList<FileState> FileStates { get; set; } = new List<FileState>();
-        public TimeSpan ButtonsDelay { get; set; } = TimeSpan.FromHours(24);
     }
 }

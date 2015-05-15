@@ -13,37 +13,30 @@ namespace FolderWatcher.Services
     {
 
         private readonly IEventAggregator _eventAggregator;
-        readonly DispatcherTimer _dispatcherTimer;
 
         [ImportingConstructor]
-        public WatcherService(Configuration configuration, [ImportMany] IPluginFactory[] pluginFactories, IFileSystemService fileSystemService, IEventAggregator eventAggregator)
+        public WatcherService(Configuration configuration, 
+            [ImportMany] IPluginFactory[] pluginFactories, 
+            IFileSystemService fileSystemService, 
+            IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
 
-            Watchers = new ObservableCollection<Folder>();
+            Folders = new ObservableCollection<Folder>();
             foreach (var folder in configuration.Folders)
             {
-                var folderWatcher = new Folder(fileSystemService, pluginFactories, folder);
+                var folderWatcher = new Folder(fileSystemService, pluginFactories, eventAggregator, folder);
                 folderWatcher.Start();
-                Watchers.Add(folderWatcher);
+                Folders.Add(folderWatcher);
             }
-            _dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            _dispatcherTimer.Tick += dispatcherTimer_Tick;
-            _dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
-            _dispatcherTimer.Start();
+
 
         }
 
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            foreach (var watcher in Watchers)
-            {
-                watcher.Sweep();
-            }
-        }
+        
 
 
-        public ObservableCollection<Folder> Watchers { get; set; }
+        public ObservableCollection<Folder> Folders { get; set; }
  
     }
 }

@@ -9,11 +9,9 @@ namespace FolderWatcher.Plugins.Delay
     [Export(typeof(IPluginFactory))]
     public class DelayPluginFactory : PluginFactoryBase<DelayPlugin, DelayPluginConfig>
     {
-        private readonly IFileSystemService _fileSystemService;
         [ImportingConstructor]
-        public DelayPluginFactory(IFileSystemService fileSystemService)
+        public DelayPluginFactory()
         {
-            _fileSystemService = fileSystemService;
         }
 
         protected override DelayPluginConfig CreateConfig(string path)
@@ -23,7 +21,7 @@ namespace FolderWatcher.Plugins.Delay
 
         protected override DelayPlugin CreatePlugin(DelayPluginConfig config)
         {
-            return new DelayPlugin(config, _fileSystemService);
+            return new DelayPlugin(config);
         }
     }
 }

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using FolderWatcher.Model;
 using FolderWatcher.Services;
 using FolderWatcher.Services.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;
 
 namespace FolderWatcher.Watcher
@@ -14,32 +16,39 @@ namespace FolderWatcher.Watcher
     public class Folder
     {
         private readonly IFileSystemService _fileSystemService;
+        private readonly IEventAggregator _eventAggregator;
         private readonly FileSystemWatcher _fsw;
-        private readonly string _path;
+        public string FullPath { get; }
         private readonly string _configPath;
         private readonly IEnumerable<IPlugin> _plugins;
+        public string Name => Path.GetFileName(FullPath);
 
-        public Folder(IFileSystemService fileSystemService, IPluginFactory[] plugins, DirectorySettings directorySettings)
+        public Folder(IFileSystemService fileSystemService, IPluginFactory[] plugins, IEventAggregator eventAggregator,  DirectorySettings directorySettings)
         {
-            _path = EnsureWatchedPath(directorySettings.Path);
-            _configPath = EnsureConfigPath(_path);
+            FullPath = EnsureWatchedPath(directorySettings.Path);
+            _configPath = EnsureConfigPath(FullPath);
             _plugins = LoadPlugins(_configPath, plugins).ToList();
-            Files = new ObservableCollection<FileSystemItem>();
+            Files = new ObservableCollection<FileChangeInfo>();
 
             _fileSystemService = fileSystemService;
+            _eventAggregator = eventAggregator;
             DirectorySettings = directorySettings;
 
-            LoadFiles(_path);
-            _fsw = CreateWatcher(_path);
+            _fsw = CreateWatcher(FullPath);
+            _eventAggregator.GetEvent<FilesEvent>().Subscribe(OnFiles);
         }
 
-        private void LoadFiles(string path)
+        private void OnFiles(FileSystemChangeSet fileSystemChangeSet)
         {
-            foreach (var file in System.IO.Directory.GetFiles(path))
+            foreach (var fileChangeInfo in fileSystemChangeSet.Added)
             {
-                AddFile(file);
+                foreach (var plugin in _plugins)
+                {
+                    plugin.OnFileCreated(fileChangeInfo);
+                }
             }
         }
+
 
         private IEnumerable<IPlugin> LoadPlugins(string configPath, IPluginFactory[] pluginFactories)
         {
@@ -62,12 +71,13 @@ namespace FolderWatcher.Watcher
         private FileSystemWatcher CreateWatcher(string path)
         {
             var fsw = new FileSystemWatcher(path);
-            //_fsw.Error += _fsw_Error;
-            fsw.Deleted += _fsw_Deleted;
-            fsw.Created += _fsw_Created;
-            //_fsw.Changed += _fsw_Changed;
+            fsw.Deleted += FileHandler;
+            fsw.Created += FileHandler;
+            fsw.Renamed += FileHandler;
+            fsw.Changed += FileHandler;
             return fsw;
         }
+        bool throttling = false;
 
         private string EnsureConfigPath(string path)
         {
@@ -81,46 +91,64 @@ namespace FolderWatcher.Watcher
             return configPath;
         }
 
-        public Model.DirectorySettings DirectorySettings { get; private set; }
-        public ObservableCollection<FileSystemItem> Files { get; set; }
+        public DirectorySettings DirectorySettings { get; private set; }
+        public ObservableCollection<FileChangeInfo> Files { get; set; }
 
-        private void _fsw_Changed(object sender, FileSystemEventArgs e)
+
+        private IList<FileChangeInfo> _filesUnderChange = new List<FileChangeInfo>();
+        private IList<FileChangeInfo> _created;
+        private IList<string> _deleted;
+        private async void FileHandler(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine(e.Name);
+            await OnChange();
         }
 
-        private void _fsw_Created(object sender, FileSystemEventArgs e)
-        {
-            var path = e.FullPath;
-            AddFile(path);
-        }
 
-        private void AddFile(string path)
+
+        private async Task OnChange()
         {
-            var changedFile = new FileSystemItem(path);
-            foreach (var plugin in _plugins)
+            if (!throttling)
             {
-                plugin.OnFile(changedFile);
+                throttling = true;
+                await Task.Delay(TimeSpan.FromMilliseconds(250));
+
+                _created = Directory.EnumerateFileSystemEntries(FullPath).Except(_filesUnderChange.Select(o => o.FullPath)).Select(o=>new FileChangeInfo(o)).ToList();
+                await Task.Delay(TimeSpan.FromMilliseconds(250));
+                throttling = false;
+                foreach (var fileChangeInfo in _created)
+                {
+                    if (fileChangeInfo.HasChanged())
+                    {
+                        await OnChange();
+                        break;
+                    }
+                }
+                _created = Directory.EnumerateFileSystemEntries(FullPath).Except(_filesUnderChange.Select(o => o.FullPath)).Select(o => new FileChangeInfo(o)).ToList();
+                _deleted = _filesUnderChange.Select(o => o.FullPath).Except(Directory.EnumerateFileSystemEntries(FullPath)).ToList();
+                _eventAggregator.GetEvent<FilesEvent>().Publish(new FileSystemChangeSet()
+                {
+                    FolderPath = FullPath,
+                    Added = _created,
+                    Deleted = _deleted
+                });
+                _filesUnderChange = Directory.EnumerateFileSystemEntries(FullPath).Select(o => new FileChangeInfo(o)).ToList(); ;
             }
-            App.Current.Dispatcher.Invoke(() => { Files.Add(changedFile); });
         }
 
-        private void _fsw_Deleted(object sender, FileSystemEventArgs e)
-        {
-            var file = Files.SingleOrDefault(o => o.FullPath == e.FullPath);
-            if (file != null)
-            {
-                App.Current.Dispatcher.Invoke(() => { Files.Remove(file); });
-            }
-        }
 
-        private void _fsw_Error(object sender, ErrorEventArgs e)
-        {
-            Console.WriteLine(e.GetException());
-        }
+        //private void AddFile(string path)
+        //{
+        //    var changedFile = new FileChangeInfo(path);
+        //    foreach (var plugin in _plugins)
+        //    {
+        //        plugin.OnFileCreated(changedFile);
+        //    }
+        //    App.Current.Dispatcher.Invoke(() => { Files.Add(changedFile); });
+        //}
 
-        public void Start()
+        public async void Start()
         {
+            await OnChange();
             _fsw.EnableRaisingEvents = true;
         }
 
@@ -134,7 +162,7 @@ namespace FolderWatcher.Watcher
             foreach (var plugin in _plugins)
             {
                 var periodialPlugin = plugin as IPeriodocalPlugin;
-                if (periodialPlugin!=null)
+                if (periodialPlugin != null)
                 {
                     periodialPlugin.Sweep();
                 }

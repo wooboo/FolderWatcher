@@ -14,7 +14,7 @@ namespace FolderWatcher.Plugins.Selector
             _config = config;
         }
 
-        public void OnFile(FileSystemItem file)
+        public void OnFileCreated(FileChangeInfo file)
         {
             var factories = ServiceLocator.Current.GetAllInstances<IPluginFactory>();
             foreach (var masks in _config.Masks)
@@ -30,9 +30,9 @@ namespace FolderWatcher.Plugins.Selector
                                 //TODO: niez³e spaghetti :D
                                 foreach (
                                     var plugin in
-                                        pluginFactory.CreatePlugins(_config.GetPath("selector", subConfigFile)))
+                                        pluginFactory.CreatePlugins(_config.GetPath("Selector", subConfigFile)))
                                 {
-                                    plugin.OnFile(file);
+                                    plugin.OnFileCreated(file);
                                 }
                             }
                         }
@@ -41,6 +41,12 @@ namespace FolderWatcher.Plugins.Selector
 
             }
         }
+
+        public void OnFileDeleted(FileChangeInfo file)
+        {
+            
+        }
+
         private bool FitsMask(string sFileName, string sFileMask)
         {
             Regex mask = new Regex(sFileMask.Replace(".", "[.]").Replace("*", ".*").Replace("?", "."));

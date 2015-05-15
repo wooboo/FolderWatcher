@@ -4,9 +4,8 @@ namespace FolderWatcher.Services.Events
 {
     public class FileSystemChangeSet
     {
-        public IList<FileSystemItem> Added { get; set; }
-        public IList<FileSystemItem> Deleted { get; set; }
-        public IList<FileSystemItem> Changed { get; set; }
-
+        public IEnumerable<FileChangeInfo> Added { get; set; }
+        public IEnumerable<string> Deleted { get; set; }
+        public string FolderPath { get; set; }
     }
 }

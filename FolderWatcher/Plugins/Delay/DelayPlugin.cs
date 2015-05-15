@@ -1,6 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using FolderWatcher.Plugins.Delay;
 using FolderWatcher.Services;
 using FolderWatcher.Services.Events;
@@ -12,15 +13,21 @@ namespace FolderWatcher.Plugins.Delay
     public class DelayPlugin : IPlugin, IPeriodocalPlugin
     {
         private readonly DelayPluginConfig _config;
-        private readonly IFileSystemService _fileSystemService;
+        readonly DispatcherTimer _dispatcherTimer;
 
-        public DelayPlugin(DelayPluginConfig config, IFileSystemService fileSystemService)
+        public DelayPlugin(DelayPluginConfig config)
         {
             _config = config;
-            _fileSystemService = fileSystemService;
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Tick += dispatcherTimer_Tick;
+            _dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
+            _dispatcherTimer.Start();
         }
-
-        public void OnFile(FileSystemItem file)
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            Sweep();
+        }
+        public void OnFileCreated(FileChangeInfo file)
         {
             _config.FileStates.Add(new FileState
             {
@@ -29,6 +36,11 @@ namespace FolderWatcher.Plugins.Delay
                 DelayAfter = _config.DelayDelay
             });
             _config.Save();
+        }
+
+        public void OnFileDeleted(FileChangeInfo file)
+        {
+            //TODO: remove from FileStates if there is
         }
 
 
@@ -43,37 +55,20 @@ namespace FolderWatcher.Plugins.Delay
                     var file = deletion.Path;
 
                     var factories = ServiceLocator.Current.GetAllInstances<IPluginFactory>();
-                            foreach (var pluginFactory in factories)
+                    foreach (var pluginFactory in factories)
+                    {
+                        if (FitsMask(_config.Plugin, pluginFactory.Name + ".*.json"))
+                        {
+                            //TODO: niez³e spaghetti :D
+                            foreach (
+                                var plugin in
+                                    pluginFactory.CreatePlugins(_config.GetPath("delay", _config.Plugin)))
                             {
-                                    if (FitsMask(_config.Plugin, pluginFactory.Name + ".*.json"))
-                                    {
-                                        //TODO: niez³e spaghetti :D
-                                        foreach (
-                                            var plugin in
-                                                pluginFactory.CreatePlugins(_config.GetPath("delay", _config.Plugin)))
-                                        {
-                                            plugin.OnFile(file);
-                                        }
+                                plugin.OnFileCreated(file);
+                            }
                         }
 
                     }
-
-
-
-
-
-
-
-
-                    //TODO: odpalanie wybranych pluginów
-                   // _fileSystemService.ForFile(deletion.Path).Call("Delay");
-
-
-
-
-
-
-
 
                     fileStates.RemoveAt(i);
                     i--;
