@@ -1,8 +1,11 @@
+using System.Collections.Generic;
+
 namespace FolderWatcher.Watcher
 {
     public interface IPluginFactory
     {
         string Name { get; }
-        bool TryCreatePlugin(string path, out IPlugin plugin);
+        IEnumerable<IPlugin> LoadPlugins(string path);
+        IEnumerable<IPlugin> CreatePlugins(string path);
     }
 }

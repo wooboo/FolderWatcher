@@ -28,8 +28,6 @@ namespace FolderWatcher.Watcher
             _fileSystemService = fileSystemService;
             DirectorySettings = directorySettings;
 
-
-
             LoadFiles(_path);
             _fsw = CreateWatcher(_path);
         }
@@ -46,8 +44,7 @@ namespace FolderWatcher.Watcher
         {
             foreach (var pluginFactory in pluginFactories)
             {
-                IPlugin plugin;
-                if (pluginFactory.TryCreatePlugin(configPath, out plugin))
+                foreach (var plugin in pluginFactory.LoadPlugins(configPath))
                 {
                     yield return plugin;
                 }
@@ -102,7 +99,7 @@ namespace FolderWatcher.Watcher
             var changedFile = new ChangedFile(path);
             foreach (var plugin in _plugins)
             {
-                plugin.OnFile(_fileSystemService, changedFile);
+                plugin.OnFile(changedFile);
             }
             App.Current.Dispatcher.Invoke(() => { Files.Add(changedFile); });
         }

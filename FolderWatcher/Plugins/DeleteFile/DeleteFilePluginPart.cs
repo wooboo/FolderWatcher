@@ -20,7 +20,7 @@ namespace FolderWatcher.Plugins.DeleteFile
 
         private void DelayedDeleteFile(ChangedFile changedFile)
         {
-             _plugin.DelayedDelete(changedFile, TimeSpan.FromMinutes(3));
+             _plugin.DelayedDelete(changedFile);
             
         }
 

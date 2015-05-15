@@ -31,5 +31,10 @@ namespace FolderWatcher.Plugins.DeleteFile
             var content = JsonConvert.SerializeObject(this);
             File.WriteAllText(_path, content);
         }
+
+        public string GetPath(params string[] parts)
+        {
+            return Path.Combine(Path.GetDirectoryName(_path), Path.Combine(parts));
+        }
     }
 }

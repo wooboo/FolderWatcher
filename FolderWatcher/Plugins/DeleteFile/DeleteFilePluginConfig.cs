@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace FolderWatcher.Plugins.DeleteFile
@@ -9,5 +10,6 @@ namespace FolderWatcher.Plugins.DeleteFile
         }
 
         public IList<FileState> FileStates { get; set; } = new List<FileState>();
+        public TimeSpan DeleteDelay { get; set; } = TimeSpan.FromHours(24);
     }
 }

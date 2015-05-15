@@ -16,18 +16,18 @@ namespace FolderWatcher.Plugins.DeleteFile
             _fileSystemService = fileSystemService;
         }
 
-        public void OnFile(IFileSystemService fileSystemService, ChangedFile file)
+        public void OnFile(ChangedFile file)
         {
             file.PluginParts.Add(new DeleteFilePluginPart(this, file));
         }
 
-        public void DelayedDelete(ChangedFile changedFile, TimeSpan fromMinutes)
+        public void DelayedDelete(ChangedFile changedFile)
         {
             _config.FileStates.Add(new FileState
             {
                 CreateDate = DateTime.Now,
                 Path = changedFile.FullPath,
-                DeleteAfter = fromMinutes
+                DeleteAfter = _config.DeleteDelay
             });
             _config.Save();
         }

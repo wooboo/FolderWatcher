@@ -91,10 +91,14 @@
     <Compile Include="Plugins\DeleteFile\DeleteFilePluginFactory.cs" />
     <Compile Include="Plugins\DeleteFile\DeleteFilePluginPart.cs" />
     <Compile Include="Plugins\DeleteFile\FileState.cs" />
-    <Compile Include="Plugins\DeleteFile\PluginConfigBase.cs" />
+    <Compile Include="Plugins\PluginConfigBase.cs" />
     <Compile Include="Plugins\DeleteFile\Resources.cs">
       <DependentUpon>Resources.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\PluginFactoryBase.cs" />
+    <Compile Include="Plugins\PluginSelector\SelectorPlugin.cs" />
+    <Compile Include="Plugins\PluginSelector\SelectorPluginConfig.cs" />
+    <Compile Include="Plugins\PluginSelector\SelectorPluginFactory.cs" />
     <Compile Include="Services\DelayedFileDeletion.cs" />
     <Compile Include="Services\FileDeletedEvent.cs" />
     <Compile Include="Services\FileSystemService.cs" />
