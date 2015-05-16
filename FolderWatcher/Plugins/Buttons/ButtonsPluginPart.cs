@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Input;
 using FolderWatcher.Services;
 using FolderWatcher.Shell;
-using FolderWatcher.Watcher;
 using Microsoft.Practices.Prism.Commands;
 
 namespace FolderWatcher.Plugins.Buttons
@@ -26,12 +25,5 @@ namespace FolderWatcher.Plugins.Buttons
         }
 
         public ICommand ExecuteCommand { get; set; }
-    }
-
-    public class FileAction
-    {
-        public string Name { get; set; }
-        public string Path { get; set; }
-        public string Plugin { get; set; }
     }
 }

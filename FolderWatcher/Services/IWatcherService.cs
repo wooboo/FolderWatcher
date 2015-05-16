@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using FolderWatcher.Watcher;
+using FolderWatcher.Core.Services;
 
 namespace FolderWatcher.Services
 {

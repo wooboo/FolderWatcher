@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FolderWatcher.Common.Plugins;
 using FolderWatcher.Plugins.Delay;
 
 namespace FolderWatcher.Plugins.Delay

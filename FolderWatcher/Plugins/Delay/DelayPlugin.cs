@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using FolderWatcher.Common.Model;
+using FolderWatcher.Common.Plugins;
+using FolderWatcher.Core.Services;
 using FolderWatcher.Plugins.Delay;
 using FolderWatcher.Services;
 using FolderWatcher.Services.Events;
-using FolderWatcher.Watcher;
 using Microsoft.Practices.ServiceLocation;
 
 namespace FolderWatcher.Plugins.Delay

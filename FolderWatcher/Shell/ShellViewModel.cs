@@ -3,10 +3,11 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using FolderWatcher.Common.Events;
+using FolderWatcher.Common.Plugins;
 using FolderWatcher.Plugins.Buttons;
 using FolderWatcher.Services;
 using FolderWatcher.Services.Events;
-using FolderWatcher.Watcher;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
@@ -74,17 +75,5 @@ namespace FolderWatcher.Shell
             set { SetProperty(ref _folders, value); }
         }
 
-    }
-    public class FolderViewModel : BindableBase
-    {
-        private ObservableCollection<FileViewModel> _files = new ObservableCollection<FileViewModel>();
-        public string Name { get; set; }
-        public string FullPath { get; set; }
-
-        public ObservableCollection<FileViewModel> Files
-        {
-            get { return _files; }
-            set { SetProperty(ref _files, value); }
-        }
     }
 }

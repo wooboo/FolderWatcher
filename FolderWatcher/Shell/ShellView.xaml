@@ -1,7 +1,6 @@
 ﻿<Window x:Class="FolderWatcher.Shell.ShellView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:watcher="clr-namespace:FolderWatcher.Watcher"
         xmlns:shell="clr-namespace:FolderWatcher.Shell"
         Title="ShellView" Height="350" Width="525">
     <Window.Resources>

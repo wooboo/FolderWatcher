@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FolderWatcher</RootNamespace>
     <AssemblyName>FolderWatcher</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -85,55 +85,34 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\Configuration.cs" />
-    <Compile Include="Model\DirectorySettings.cs" />
-    <Compile Include="Model\Plugin.cs" />
+    <Compile Include="Plugins\Buttons\AddPluginPart.cs" />
     <Compile Include="Plugins\Buttons\AddPluginPartEvent.cs" />
-    <Compile Include="Plugins\Delay\DelayPlugin.cs" />
-    <Compile Include="Plugins\Delay\DelayPluginConfig.cs" />
-    <Compile Include="Plugins\Delay\DelayPluginFactory.cs" />
-    <Compile Include="Plugins\Delay\FileState.cs" />
     <Compile Include="Plugins\Buttons\ButtonsPlugin.cs" />
     <Compile Include="Plugins\Buttons\ButtonsPluginConfig.cs" />
     <Compile Include="Plugins\Buttons\ButtonsPluginFactory.cs" />
     <Compile Include="Plugins\Buttons\ButtonsPluginPart.cs" />
+    <Compile Include="Plugins\Buttons\FileAction.cs" />
     <Compile Include="Plugins\Buttons\Resources.cs">
       <DependentUpon>Resources.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Plugins\Null\NullPlugin.cs" />
-    <Compile Include="Plugins\Null\NullPluginConfig.cs" />
-    <Compile Include="Plugins\Null\NullPluginFactory.cs" />
-    <Compile Include="Plugins\Delete\DeletePluginConfig.cs" />
-    <Compile Include="Plugins\Delete\DeletePluginFactory.cs" />
-    <Compile Include="Plugins\PluginBase.cs" />
-    <Compile Include="Plugins\PluginConfigBase.cs" />
-    <Compile Include="Plugins\PluginFactoryBase.cs" />
-    <Compile Include="Plugins\Script\FormattableObject.cs" />
-    <Compile Include="Plugins\Script\ScriptPlugin.cs" />
-    <Compile Include="Plugins\Script\ScriptPluginConfig.cs" />
-    <Compile Include="Plugins\Script\ScriptPluginFactory.cs" />
-    <Compile Include="Plugins\Selector\SelectorPlugin.cs" />
-    <Compile Include="Plugins\Selector\SelectorPluginConfig.cs" />
-    <Compile Include="Plugins\Selector\SelectorPluginFactory.cs" />
+    <Compile Include="Plugins\Delay\DelayPlugin.cs" />
+    <Compile Include="Plugins\Delay\DelayPluginConfig.cs" />
+    <Compile Include="Plugins\Delay\DelayPluginFactory.cs" />
+    <Compile Include="Plugins\Delay\FileState.cs" />
     <Compile Include="Services\DelayedFileDeletion.cs" />
-    <Compile Include="Services\Events\FileChangeInfo.cs" />
     <Compile Include="Services\Events\FileDeletedEvent.cs" />
-    <Compile Include="Services\Events\FilesEvent.cs" />
-    <Compile Include="Services\Events\FileSystemChangeSet.cs" />
     <Compile Include="Services\Events\NewFileEvent.cs" />
     <Compile Include="Services\FileSystemService.cs" />
     <Compile Include="Services\DeleteFileActionPlugin.cs" />
     <Compile Include="Services\FileAction.cs" />
     <Compile Include="Services\IWatcherService.cs" />
-    <Compile Include="Services\PluginManager.cs" />
     <Compile Include="Services\WatcherService.cs" />
     <Compile Include="Services\IFileActionPlugin.cs" />
     <Compile Include="Services\IFileSystemService.cs" />
+    <Compile Include="Shell\FolderViewModel.cs" />
     <Compile Include="Shell\ShellViewModel.cs" />
-    <Compile Include="Plugins\Delete\DeletePlugin.cs" />
     <Compile Include="Shell\FileViewModel.cs" />
-    <Compile Include="Watcher\IPlugin.cs" />
-    <Compile Include="Watcher\IPluginFactory.cs" />
-    <Compile Include="Watcher\IPluginPart.cs" />
+    <Compile Include="Services\IPluginPart.cs" />
     <Page Include="Plugins\Buttons\Resources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -146,7 +125,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Watcher\Folder.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Shell\ShellView.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
@@ -184,7 +162,23 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\FolderWatcher.Common\FolderWatcher.Common.csproj">
+      <Project>{12e7a278-42e2-4068-9ca6-6bf38a69d4e9}</Project>
+      <Name>FolderWatcher.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FolderWatcher.Core\FolderWatcher.Core.csproj">
+      <Project>{39D11D59-892B-4C94-9C7E-13CF10D8E6E6}</Project>
+      <Name>FolderWatcher.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FolderWatcher.Plugins.Files\FolderWatcher.Plugins.Files.csproj">
+      <Project>{f5a4abd1-55f3-4b44-82f2-ebe5ac3860bc}</Project>
+      <Name>FolderWatcher.Plugins.Files</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Watcher\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

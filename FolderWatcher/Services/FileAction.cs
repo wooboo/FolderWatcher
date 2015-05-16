@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using FolderWatcher.Watcher;
 using Microsoft.Practices.ServiceLocation;
 
 namespace FolderWatcher.Services

@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using FolderWatcher.Common.Model;
+using FolderWatcher.Common.Plugins;
+using FolderWatcher.Core.Services;
 using FolderWatcher.Services;
 using FolderWatcher.Services.Events;
 using FolderWatcher.Shell;
-using FolderWatcher.Watcher;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;
 
@@ -48,7 +50,7 @@ namespace FolderWatcher.Plugins.Buttons
 
         public void Execute(FileAction fileViewModel)
         {
-            _plugins.Single(o => o.Name.FullName == fileViewModel.Plugin).OnFileCreated(new FileChangeInfo(fileViewModel.Path));
+            _plugins.Single(o => o.Metadata.FullName == fileViewModel.Plugin).OnFileCreated(new FileChangeInfo(fileViewModel.Path));
         }
     }
 }

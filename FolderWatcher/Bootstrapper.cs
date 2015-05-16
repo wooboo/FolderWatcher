@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition.Hosting;
+using System.Reflection;
 using System.Windows;
 using FolderWatcher.Shell;
 using Microsoft.Practices.Prism.MefExtensions;
@@ -31,7 +32,8 @@ namespace FolderWatcher
             base.ConfigureAggregateCatalog();
 
             // Add this assembly to export ModuleTracker
-            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof (Bootstrapper).Assembly));
+            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+            this.AggregateCatalog.Catalogs.Add(new DirectoryCatalog("."));
         }
     }
 }

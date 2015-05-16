@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using FolderWatcher.Plugins.Delay;
+using FolderWatcher.Common.Plugins;
 
 namespace FolderWatcher.Plugins.Buttons
 {

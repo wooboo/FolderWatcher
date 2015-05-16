@@ -1,7 +1,7 @@
 using System.ComponentModel.Composition;
 using System.IO;
+using FolderWatcher.Common.Plugins;
 using FolderWatcher.Services;
-using FolderWatcher.Watcher;
 using Newtonsoft.Json;
 
 namespace FolderWatcher.Plugins.Delay

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using FolderWatcher.Common.Model;
 using Newtonsoft.Json;
 
 namespace FolderWatcher.Model
