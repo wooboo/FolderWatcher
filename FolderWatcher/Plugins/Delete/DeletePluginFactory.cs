@@ -16,9 +16,9 @@ namespace FolderWatcher.Plugins.Delete
             _fileSystemService = fileSystemService;
         }
 
-        protected override DeletePluginConfig CreateConfig(string path)
+        protected override DeletePluginConfig CreateConfig(string configFile)
         {
-            return new DeletePluginConfig(path);
+            return new DeletePluginConfig(configFile);
         }
 
         protected override DeletePlugin CreatePlugin(DeletePluginConfig config)

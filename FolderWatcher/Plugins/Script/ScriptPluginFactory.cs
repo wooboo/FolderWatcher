@@ -11,9 +11,9 @@ namespace FolderWatcher.Plugins.Script
         {
         }
 
-        protected override ScriptPluginConfig CreateConfig(string path)
+        protected override ScriptPluginConfig CreateConfig(string configFile)
         {
-            return new ScriptPluginConfig(path);
+            return new ScriptPluginConfig(configFile);
         }
 
         protected override ScriptPlugin CreatePlugin(ScriptPluginConfig config)

@@ -12,6 +12,6 @@ namespace FolderWatcher.Plugins.Delay
 
         public IList<FileState> FileStates { get; set; } = new List<FileState>();
         public TimeSpan DelayDelay { get; set; } = TimeSpan.FromHours(24);
-        public string Plugin { get; set; }
+        public string Plugin { get; set; } = "Null.default";
     }
 }

@@ -11,9 +11,9 @@ namespace FolderWatcher.Plugins.Selector
         {
         }
 
-        protected override SelectorPluginConfig CreateConfig(string path)
+        protected override SelectorPluginConfig CreateConfig(string configFile)
         {
-            return new SelectorPluginConfig(path);
+            return new SelectorPluginConfig(configFile);
         }
 
         protected override SelectorPlugin CreatePlugin(SelectorPluginConfig config)

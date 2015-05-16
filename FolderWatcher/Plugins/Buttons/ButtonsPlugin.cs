@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,20 +13,26 @@ using Microsoft.Practices.ServiceLocation;
 
 namespace FolderWatcher.Plugins.Buttons
 {
-    public class ButtonsPlugin : IPlugin
+    public class ButtonsPlugin : PluginBase<ButtonsPluginConfig> 
     {
         private readonly IEventAggregator _eventAggregator;
-        private readonly ButtonsPluginConfig _config;
+        private readonly IEnumerable<IPlugin> _plugins;
 
-        public ButtonsPlugin(ButtonsPluginConfig config, IEventAggregator eventAggregator)
+        public ButtonsPlugin(ButtonsPluginConfig config, IEventAggregator eventAggregator):base(config)
         {
             _eventAggregator = eventAggregator;
-            _config = config;
+            _plugins = LoadPlugins();
         }
 
-        public void OnFileCreated(FileChangeInfo file)
+        private IEnumerable<IPlugin> LoadPlugins()
+        { 
+            var pluginManager = ServiceLocator.Current.GetInstance<PluginManager>();
+            return pluginManager.LoadAllPlugins(Config.GetPath(Config.GetName()), Config.Buttons.Values).ToList();
+        }
+
+        public override void OnFileCreated(FileChangeInfo file)
         {
-            var actions = _config.Buttons.Select(o => new FileAction()
+            var actions = Config.Buttons.Select(o => new FileAction()
             {
                 Path = file.FullPath,
                 Plugin = o.Value,
@@ -39,33 +46,9 @@ namespace FolderWatcher.Plugins.Buttons
             });
         }
 
-        public void OnFileDeleted(FileChangeInfo file)
-        {
-            
-        }
-
         public void Execute(FileAction fileViewModel)
         {
-            var factories = ServiceLocator.Current.GetAllInstances<IPluginFactory>();
-            foreach (var pluginFactory in factories)
-            {
-                if (FitsMask(fileViewModel.Plugin, pluginFactory.Name + ".*.json"))
-                {
-                    //TODO: niez³e spaghetti :D
-                    foreach (
-                        var plugin in
-                            pluginFactory.CreatePlugins(_config.GetPath("Buttons", fileViewModel.Plugin)))
-                    {
-                        plugin.OnFileCreated(new FileChangeInfo(fileViewModel.Path));
-                    }
-                }
-
-            }
-        }
-        private bool FitsMask(string sFileName, string sFileMask)
-        {
-            Regex mask = new Regex(sFileMask.Replace(".", "[.]").Replace("*", ".*").Replace("?", "."));
-            return mask.IsMatch(sFileName);
+            _plugins.Single(o => o.Name.FullName == fileViewModel.Plugin).OnFileCreated(new FileChangeInfo(fileViewModel.Path));
         }
     }
 }

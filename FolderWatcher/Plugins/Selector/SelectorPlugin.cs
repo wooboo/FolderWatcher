@@ -1,51 +1,47 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using FolderWatcher.Services;
 using FolderWatcher.Services.Events;
 using FolderWatcher.Watcher;
 using Microsoft.Practices.ServiceLocation;
 
 namespace FolderWatcher.Plugins.Selector
 {
-    public class SelectorPlugin : IPlugin
+    public class SelectorPlugin : PluginBase<SelectorPluginConfig>
     {
-        private readonly SelectorPluginConfig _config;
+        private IDictionary<string, IEnumerable<IPlugin>> _plugins;
 
-        public SelectorPlugin(SelectorPluginConfig config)
+        public SelectorPlugin(SelectorPluginConfig config) : base(config)
         {
-            _config = config;
+            _plugins = LoadPlugins();
+        }
+        private IDictionary<string, IEnumerable<IPlugin>> LoadPlugins()
+        {
+            var dict= new Dictionary<string, IEnumerable<IPlugin>>();
+            var pluginManager = ServiceLocator.Current.GetInstance<PluginManager>();
+            foreach (var mask in Config.Masks)
+            {
+                dict[mask.Key] = pluginManager.LoadAllPlugins(Config.GetPath(Config.GetName()), mask.Value);
+            }
+            return dict;
         }
 
-        public void OnFileCreated(FileChangeInfo file)
+        public override void OnFileCreated(FileChangeInfo file)
         {
-            var factories = ServiceLocator.Current.GetAllInstances<IPluginFactory>();
-            foreach (var masks in _config.Masks)
+            foreach (var masks in Config.Masks)
             {
                 if (FitsMask(file.Name, masks.Key))
                 {
-                    foreach (var pluginFactory in factories)
+                    foreach (var plugin in _plugins[masks.Key])
                     {
-                        foreach (var subConfigFile in masks.Value)
-                        {
-                            if (FitsMask(subConfigFile, pluginFactory.Name + ".*.json"))
-                            {
-                                //TODO: niez³e spaghetti :D
-                                foreach (
-                                    var plugin in
-                                        pluginFactory.CreatePlugins(_config.GetPath("Selector", subConfigFile)))
-                                {
-                                    plugin.OnFileCreated(file);
-                                }
-                            }
-                        }
+                        plugin.OnFileCreated(file);
                     }
                 }
 
             }
         }
 
-        public void OnFileDeleted(FileChangeInfo file)
-        {
-            
-        }
 
         private bool FitsMask(string sFileName, string sFileMask)
         {

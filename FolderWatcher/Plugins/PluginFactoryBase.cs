@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using FolderWatcher.Watcher;
 
 namespace FolderWatcher.Plugins
@@ -21,29 +23,53 @@ namespace FolderWatcher.Plugins
             }
         }
 
-        public IEnumerable<IPlugin> LoadPlugins(string path)
+        public IEnumerable<string> FilterConfigs(IEnumerable<string> plugins)
         {
-            var configFiles = Directory.GetFiles(path, Name + ".*.json");
-            foreach (var configFile in configFiles)
-            {
-                foreach (var plugin in CreatePlugins(configFile))
-                {
-                    yield return plugin;
-                }
-            }
+            return plugins?.Where(o => FitsMask(o, PluginNamePattern));
+        }
+        private bool FitsMask(string sFileName, string sFileMask)
+        {
+            Regex mask = new Regex(sFileMask.Replace(".", "[.]").Replace("*", ".*").Replace("?", "."));
+            return mask.IsMatch(sFileName);
         }
 
-        public IEnumerable<IPlugin> CreatePlugins(string configFile)
-        {
+        public string PluginNamePattern => Name + ".*";
 
-            var config = CreateConfig(configFile);
-            if (config.TryLoad())
+        public IEnumerable<IPlugin> LoadPlugins(string path, IEnumerable<string> pluginNames = null)
+        {
+            if (pluginNames == null)
+            {
+                pluginNames = Directory.GetFiles(path, PluginNamePattern+".json").Select(Path.GetFileNameWithoutExtension);
+            }
+            var configFiles = pluginNames.Select(o => Path.Combine(path, o)+".json");
+            
+            foreach (var config in GetConfigs(configFiles))
             {
                 yield return CreatePlugin(config);
             }
+            
         }
 
-        protected abstract TConfig CreateConfig(string path);
+        //public IEnumerable<IPlugin> CreatePlugins(string configFile)
+        //{
+
+        //    var config = CreateConfig(configFile);
+        //    if (config.Load())
+        //    {
+        //        yield return CreatePlugin(config);
+        //    }
+        //}
+
+        public IEnumerable<TConfig> GetConfigs(IEnumerable<string> configFiles)
+        {
+            foreach (var configFile in configFiles)
+            {
+                var config = CreateConfig(configFile);
+                config.Load();
+                yield return config;
+            }
+        } 
+        protected abstract TConfig CreateConfig(string configFile);
 
         protected abstract TPlugin CreatePlugin(TConfig config);
     }

@@ -5,7 +5,9 @@ namespace FolderWatcher.Watcher
     public interface IPluginFactory
     {
         string Name { get; }
-        IEnumerable<IPlugin> LoadPlugins(string path);
-        IEnumerable<IPlugin> CreatePlugins(string path);
+        string PluginNamePattern { get; }
+        IEnumerable<IPlugin> LoadPlugins(string path, IEnumerable<string> pluginNames = null);
+        IEnumerable<string> FilterConfigs(IEnumerable<string> plugins);
+        //IEnumerable<IPlugin> CreatePlugins(string path);
     }
 }

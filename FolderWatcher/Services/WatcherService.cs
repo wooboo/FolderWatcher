@@ -16,7 +16,7 @@ namespace FolderWatcher.Services
 
         [ImportingConstructor]
         public WatcherService(Configuration configuration, 
-            [ImportMany] IPluginFactory[] pluginFactories, 
+            PluginManager pluginManager,
             IFileSystemService fileSystemService, 
             IEventAggregator eventAggregator)
         {
@@ -25,7 +25,7 @@ namespace FolderWatcher.Services
             Folders = new ObservableCollection<Folder>();
             foreach (var folder in configuration.Folders)
             {
-                var folderWatcher = new Folder(fileSystemService, pluginFactories, eventAggregator, folder);
+                var folderWatcher = new Folder(fileSystemService, pluginManager, eventAggregator, folder);
                 folderWatcher.Start();
                 Folders.Add(folderWatcher);
             }

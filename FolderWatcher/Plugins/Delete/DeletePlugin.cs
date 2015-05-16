@@ -6,25 +6,20 @@ using FolderWatcher.Watcher;
 
 namespace FolderWatcher.Plugins.Delete
 {
-    public class DeletePlugin : IPlugin
+    public class DeletePlugin : PluginBase<DeletePluginConfig>
     {
-        private readonly DeletePluginConfig _config;
         private readonly IFileSystemService _fileSystemService;
 
-        public DeletePlugin(DeletePluginConfig config, IFileSystemService fileSystemService)
+        public DeletePlugin(DeletePluginConfig config, IFileSystemService fileSystemService) : base(config)
         {
-            _config = config;
             _fileSystemService = fileSystemService;
         }
 
-        public void OnFileCreated(FileChangeInfo file)
+
+        public override void OnFileCreated(FileChangeInfo file)
         {
             _fileSystemService.ForFile(file.FullPath).Call("delete");
         }
 
-        public void OnFileDeleted(FileChangeInfo file)
-        {
-            
-        }
     }
 }

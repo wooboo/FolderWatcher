@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using FolderWatcher.Plugins.Buttons;
@@ -9,6 +10,7 @@ using FolderWatcher.Watcher;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.ServiceLocation;
 
 namespace FolderWatcher.Shell
 {
@@ -22,6 +24,8 @@ namespace FolderWatcher.Shell
 
         private void SetupDirectory()
         {
+            var path = Path.Combine(_folders[0].FullPath, ".watcher");
+            var factories = ServiceLocator.Current.GetAllInstances<IPluginFactory>();
 
         }
         [ImportingConstructor]
@@ -48,29 +52,20 @@ namespace FolderWatcher.Shell
             });
             _eventAggregator.GetEvent<AddPluginPartEvent>().Subscribe(part =>
             {
-                var folder = Folders.Single(f => f.FullPath == part.FolderPath);
                 App.Current.Dispatcher.Invoke(() =>
                 {
+                    var folder = Folders.Single(f => f.FullPath == part.FolderPath);
                     folder.Files.Single(o => o.FullPath == part.FilePath).PluginParts.Add(part.Part);
                 });
             });
-            this.Folders = new ObservableCollection<FolderViewModel>(_watcherService.Folders.Select(o => new FolderViewModel() {Name=o.Name, FullPath=o.FullPath}));
-            //this.Folders = new ObservableCollection<Folder>();
-            //this.Folders.Add(new Folder("~\\Downloads","*.*")
-            //{
-            //    Files = new ObservableCollection<FileViewModel>
-            //    {
-            //        new FileViewModel("~\\Downloads\\aaa.txt"),
-            //        new FileViewModel("~\\Downloads\\aaa.txt"),
-            //        new FileViewModel("~\\Downloads\\aaa.txt"),
-            //        new FileViewModel("~\\Downloads\\aaa.txt"),
-            //        new FileViewModel("~\\Downloads\\aaa.txt"),
-            //        new FileViewModel("~\\Downloads\\aaa.txt"),
-            //        new FileViewModel("~\\Downloads\\aaa.txt"),
-            //        new FileViewModel("~\\Downloads\\aaa.txt"),
-            //        new FileViewModel("~\\Downloads\\aaa.txt"),
-            //    }
-            //});
+            this.Folders =
+                new ObservableCollection<FolderViewModel>(
+                    _watcherService.Folders.Select(o => new FolderViewModel()
+                    {
+                        Name = o.Name, FullPath = o.FullPath
+                    
+                    }));
+
         }
 
         public ObservableCollection<FolderViewModel> Folders

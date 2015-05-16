@@ -99,8 +99,12 @@
     <Compile Include="Plugins\Buttons\Resources.cs">
       <DependentUpon>Resources.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\Null\NullPlugin.cs" />
+    <Compile Include="Plugins\Null\NullPluginConfig.cs" />
+    <Compile Include="Plugins\Null\NullPluginFactory.cs" />
     <Compile Include="Plugins\Delete\DeletePluginConfig.cs" />
     <Compile Include="Plugins\Delete\DeletePluginFactory.cs" />
+    <Compile Include="Plugins\PluginBase.cs" />
     <Compile Include="Plugins\PluginConfigBase.cs" />
     <Compile Include="Plugins\PluginFactoryBase.cs" />
     <Compile Include="Plugins\Script\FormattableObject.cs" />
@@ -120,8 +124,8 @@
     <Compile Include="Services\DeleteFileActionPlugin.cs" />
     <Compile Include="Services\FileAction.cs" />
     <Compile Include="Services\IWatcherService.cs" />
+    <Compile Include="Services\PluginManager.cs" />
     <Compile Include="Services\WatcherService.cs" />
-    <Compile Include="Watcher\IPeriodocalPlugin.cs" />
     <Compile Include="Services\IFileActionPlugin.cs" />
     <Compile Include="Services\IFileSystemService.cs" />
     <Compile Include="Shell\ShellViewModel.cs" />

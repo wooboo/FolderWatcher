@@ -14,9 +14,9 @@ namespace FolderWatcher.Plugins.Delay
         {
         }
 
-        protected override DelayPluginConfig CreateConfig(string path)
+        protected override DelayPluginConfig CreateConfig(string configFile)
         {
-            return new DelayPluginConfig(path);
+            return new DelayPluginConfig(configFile);
         }
 
         protected override DelayPlugin CreatePlugin(DelayPluginConfig config)

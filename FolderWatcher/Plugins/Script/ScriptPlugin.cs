@@ -6,16 +6,16 @@ using Microsoft.Practices.ServiceLocation;
 
 namespace FolderWatcher.Plugins.Script
 {
-    public class ScriptPlugin : IPlugin
+    public class ScriptPlugin : PluginBase<ScriptPluginConfig>
     {
         private readonly ScriptPluginConfig _config;
 
-        public ScriptPlugin(ScriptPluginConfig config)
+        public ScriptPlugin(ScriptPluginConfig config) : base(config)
         {
             _config = config;
         }
 
-        public void OnFileCreated(FileChangeInfo file)
+        public override void OnFileCreated(FileChangeInfo file)
         {
             ProcessStartInfo processStartInfo = null;
             var fileName = _config.FileName;
@@ -25,15 +25,28 @@ namespace FolderWatcher.Plugins.Script
                 fileName = _config.GetPath("scripts", "tmp", fileName + ".cmd");
                 File.WriteAllText(fileName, _config.Script);
             }
-            processStartInfo = new ProcessStartInfo(fileName, string.Format(_config.Arguments, file.FullPath));
-            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            var process = Process.Start(processStartInfo);
-            process.WaitForExit();
+            if (!string.IsNullOrWhiteSpace(fileName))
+            {
+                var arguments = string.Format(_config.Arguments, file.FullPath);
+                Debug.WriteLine("Executing: {0} {1}", fileName, arguments);
+                processStartInfo = new ProcessStartInfo(fileName, arguments);
+                processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                processStartInfo.RedirectStandardOutput = true;
+                processStartInfo.UseShellExecute = false;
+                processStartInfo.CreateNoWindow = true;
+                using (var process = Process.Start(processStartInfo))
+                {
+                    using (var reader = process.StandardOutput)
+                    {
+                        Debug.WriteLine(reader.ReadToEnd());
+
+                    }
+                    //process.WaitForExit();
+                    Debug.WriteLine("Exit code: {0}", process.ExitCode);
+                }
+
+            }
         }
 
-        public void OnFileDeleted(FileChangeInfo file)
-        {
-            
-        }
     }
 }

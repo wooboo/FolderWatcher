@@ -12,7 +12,7 @@ namespace FolderWatcher.Plugins
             _path = path;
         }
 
-        public bool TryLoad()
+        public virtual bool Load()
         {
             if (File.Exists(_path))
             {
@@ -23,18 +23,27 @@ namespace FolderWatcher.Plugins
                 }
                 return true;
             }
-            return false;
+            else
+            {
+                Save();
+                return false;
+            }
         }
 
-        public void Save()
+        public virtual void Save()
         {
-            var content = JsonConvert.SerializeObject(this);
+            var content = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(_path, content);
         }
 
         public string GetPath(params string[] parts)
         {
             return Path.Combine(Path.GetDirectoryName(_path), Path.Combine(parts));
+        }
+
+        public string GetName()
+        {
+            return Path.GetFileNameWithoutExtension(_path);
         }
     }
 }

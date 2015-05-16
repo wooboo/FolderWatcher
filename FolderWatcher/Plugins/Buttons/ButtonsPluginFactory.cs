@@ -18,9 +18,9 @@ namespace FolderWatcher.Plugins.Buttons
             _eventAggregator = eventAggregator;
         }
 
-        protected override ButtonsPluginConfig CreateConfig(string path)
+        protected override ButtonsPluginConfig CreateConfig(string configFile)
         {
-            return new ButtonsPluginConfig(path);
+            return new ButtonsPluginConfig(configFile);
         }
 
         protected override ButtonsPlugin CreatePlugin(ButtonsPluginConfig config)
