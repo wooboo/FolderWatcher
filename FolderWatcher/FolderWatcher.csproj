@@ -89,7 +89,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\Configuration.cs" />
     <Compile Include="Plugins\Buttons\AddPluginPart.cs" />
     <Compile Include="Plugins\Buttons\AddPluginPartEvent.cs" />
     <Compile Include="Plugins\Buttons\ButtonsPlugin.cs" />
@@ -104,12 +103,10 @@
     <Compile Include="Plugins\Delay\DelayPluginConfig.cs" />
     <Compile Include="Plugins\Delay\DelayPluginFactory.cs" />
     <Compile Include="Plugins\Delay\FileState.cs" />
-    <Compile Include="Services\IWatcherService.cs" />
-    <Compile Include="Services\WatcherService.cs" />
-    <Compile Include="Shell\FolderViewModel.cs" />
+    <Compile Include="Model\FolderViewModel.cs" />
     <Compile Include="Shell\ShellViewModel.cs" />
-    <Compile Include="Shell\FileViewModel.cs" />
-    <Compile Include="Services\IPluginPart.cs" />
+    <Compile Include="Model\FileViewModel.cs" />
+    <Compile Include="Model\IPluginPart.cs" />
     <Page Include="Plugins\Buttons\Resources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -174,6 +171,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Services\" />
     <Folder Include="Watcher\" />
   </ItemGroup>
   <ItemGroup>

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
+using FolderWatcher.Common.Services;
 using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace FolderWatcher.Core.Services
 {
-
-    public class Folder
+    public class Folder:IFolder
     {
         private readonly PluginManager _pluginManager;
         private readonly IEventAggregator _eventAggregator;

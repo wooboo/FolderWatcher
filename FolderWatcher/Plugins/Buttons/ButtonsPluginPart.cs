@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Windows.Input;
-using FolderWatcher.Services;
+using FolderWatcher.Model;
 using Microsoft.Practices.Prism.Commands;
 
 namespace FolderWatcher.Plugins.Buttons

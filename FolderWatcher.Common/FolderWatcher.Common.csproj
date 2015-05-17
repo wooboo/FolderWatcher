@@ -51,6 +51,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -62,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Events\FilesEvent.cs" />
     <Compile Include="Events\FileSystemChangeSet.cs" />
+    <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\DirectorySettings.cs" />
     <Compile Include="Model\FileChangeInfo.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
@@ -71,10 +73,10 @@
     <Compile Include="Plugins\PluginFactoryBase.cs" />
     <Compile Include="Plugins\PluginMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IFolder.cs" />
+    <Compile Include="Services\IWatcherService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

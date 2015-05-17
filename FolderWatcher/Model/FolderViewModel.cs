@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using Microsoft.Practices.Prism.Mvvm;
 
-namespace FolderWatcher.Shell
+namespace FolderWatcher.Model
 {
     public class FolderViewModel : BindableBase
     {

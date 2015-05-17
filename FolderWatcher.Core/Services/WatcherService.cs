@@ -1,10 +1,10 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using FolderWatcher.Core.Services;
-using FolderWatcher.Model;
+using FolderWatcher.Common.Model;
+using FolderWatcher.Common.Services;
 using Microsoft.Practices.Prism.PubSubEvents;
 
-namespace FolderWatcher.Services
+namespace FolderWatcher.Core.Services
 {
     [Export(typeof (IWatcherService))]
     public class WatcherService : IWatcherService
@@ -18,7 +18,7 @@ namespace FolderWatcher.Services
         {
             _eventAggregator = eventAggregator;
 
-            Folders = new ObservableCollection<Folder>();
+            Folders = new ObservableCollection<IFolder>();
             foreach (var folder in configuration.Folders)
             {
                 var folderWatcher = new Folder(pluginManager, eventAggregator, folder);
@@ -27,6 +27,6 @@ namespace FolderWatcher.Services
             }
         }
 
-        public ObservableCollection<Folder> Folders { get; set; }
+        public ObservableCollection<IFolder> Folders { get; set; }
     }
 }
