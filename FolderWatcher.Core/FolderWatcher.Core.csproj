@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Plugins\Sequence\SequencePlugin.cs" />
+    <Compile Include="Plugins\Sequence\SequencePluginConfig.cs" />
+    <Compile Include="Plugins\Sequence\SequencePluginFactory.cs" />
     <Compile Include="Plugins\Null\NullPlugin.cs" />
     <Compile Include="Plugins\Null\NullPluginConfig.cs" />
     <Compile Include="Plugins\Null\NullPluginFactory.cs" />
