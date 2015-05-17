@@ -1,13 +1,10 @@
 using System.ComponentModel.Composition;
-using System.IO;
 using FolderWatcher.Common.Plugins;
-using FolderWatcher.Services;
 using Microsoft.Practices.Prism.PubSubEvents;
-using Newtonsoft.Json;
 
 namespace FolderWatcher.Plugins.Buttons
 {
-    [Export(typeof(IPluginFactory))]
+    [Export(typeof (IPluginFactory))]
     public class ButtonsPluginFactory : PluginFactoryBase<ButtonsPlugin, ButtonsPluginConfig>
     {
         private readonly IEventAggregator _eventAggregator;

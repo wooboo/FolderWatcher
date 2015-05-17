@@ -1,6 +1,5 @@
 using System;
 using FolderWatcher.Common.Model;
-using FolderWatcher.Services.Events;
 
 namespace FolderWatcher.Plugins.Delay
 {

@@ -2,12 +2,12 @@
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Plugins;
 using FolderWatcher.Plugins.Buttons;
 using FolderWatcher.Services;
-using FolderWatcher.Services.Events;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
@@ -18,17 +18,10 @@ namespace FolderWatcher.Shell
     [Export]
     public class ShellViewModel : BindableBase
     {
-        private readonly IWatcherService _watcherService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IWatcherService _watcherService;
         private ObservableCollection<FolderViewModel> _folders;
-        public ICommand Setup { get; set; }
 
-        private void SetupDirectory()
-        {
-            var path = Path.Combine(_folders[0].FullPath, ".watcher");
-            var factories = ServiceLocator.Current.GetAllInstances<IPluginFactory>();
-
-        }
         [ImportingConstructor]
         public ShellViewModel(IWatcherService watcherService, IEventAggregator eventAggregator)
         {
@@ -37,7 +30,7 @@ namespace FolderWatcher.Shell
             Setup = new DelegateCommand(SetupDirectory);
             _eventAggregator.GetEvent<FilesEvent>().Subscribe(o =>
             {
-                App.Current.Dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     var folder = Folders.Single(f => f.FullPath == o.FolderPath);
                     foreach (var fileChangeInfo in o.Added)
@@ -53,21 +46,22 @@ namespace FolderWatcher.Shell
             });
             _eventAggregator.GetEvent<AddPluginPartEvent>().Subscribe(part =>
             {
-                App.Current.Dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     var folder = Folders.Single(f => f.FullPath == part.FolderPath);
                     folder.Files.Single(o => o.FullPath == part.FilePath).PluginParts.Add(part.Part);
                 });
             });
-            this.Folders =
+            Folders =
                 new ObservableCollection<FolderViewModel>(
-                    _watcherService.Folders.Select(o => new FolderViewModel()
+                    _watcherService.Folders.Select(o => new FolderViewModel
                     {
-                        Name = o.Name, FullPath = o.FullPath
-                    
+                        Name = o.Name,
+                        FullPath = o.FullPath
                     }));
-
         }
+
+        public ICommand Setup { get; set; }
 
         public ObservableCollection<FolderViewModel> Folders
         {
@@ -75,5 +69,10 @@ namespace FolderWatcher.Shell
             set { SetProperty(ref _folders, value); }
         }
 
+        private void SetupDirectory()
+        {
+            var path = Path.Combine(_folders[0].FullPath, ".watcher");
+            var factories = ServiceLocator.Current.GetAllInstances<IPluginFactory>();
+        }
     }
 }

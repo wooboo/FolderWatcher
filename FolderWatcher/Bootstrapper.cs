@@ -11,7 +11,7 @@ namespace FolderWatcher
     {
         protected override DependencyObject CreateShell()
         {
-            return this.Container.GetExportedValue<ShellView>();
+            return Container.GetExportedValue<ShellView>();
         }
 
         protected override void InitializeShell()
@@ -32,8 +32,8 @@ namespace FolderWatcher
             base.ConfigureAggregateCatalog();
 
             // Add this assembly to export ModuleTracker
-            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
-            this.AggregateCatalog.Catalogs.Add(new DirectoryCatalog("."));
+            AggregateCatalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+            AggregateCatalog.Catalogs.Add(new DirectoryCatalog("."));
         }
     }
 }

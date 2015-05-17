@@ -5,7 +5,7 @@ using Microsoft.Practices.Prism.Mvvm;
 
 namespace FolderWatcher.Shell
 {
-    public class FileViewModel:BindableBase
+    public class FileViewModel : BindableBase
     {
         public FileViewModel(string path)
         {
@@ -14,7 +14,7 @@ namespace FolderWatcher.Shell
             PluginParts = new List<IPluginPart>();
         }
 
-        public string FullPath { get; private set; }
+        public string FullPath { get; }
         public string Name { get; set; }
         public List<IPluginPart> PluginParts { get; set; }
     }

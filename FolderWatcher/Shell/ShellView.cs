@@ -1,11 +1,9 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Threading.Tasks;
+using System.Drawing;
 using System.Windows;
-using System.Windows.Controls;
 using Microsoft.Practices.Prism.Mvvm;
-using ResourceDictionary = System.Windows.ResourceDictionary;
 
 namespace FolderWatcher.Shell
 {
@@ -22,17 +20,24 @@ namespace FolderWatcher.Shell
             {
                 Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             }
-            
+
             InitializeComponent();
-            this.SetValue(
+            SetValue(
                 ViewModelLocator.AutoWireViewModelProperty, true);
-            
+            System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
+            var i = new Icon(Application.GetResourceStream(new Uri("/eye.ico", UriKind.Relative)).Stream);
+            ni.Icon = i;
+            ni.Visible = true;
+            ni.DoubleClick +=
+                delegate (object sender, EventArgs args)
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                };
         }
 
         public void OnImportsSatisfied()
         {
-            
         }
     }
-
 }

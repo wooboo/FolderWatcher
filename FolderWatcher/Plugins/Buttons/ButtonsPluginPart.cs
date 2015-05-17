@@ -1,15 +1,12 @@
-using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Windows.Input;
 using FolderWatcher.Services;
-using FolderWatcher.Shell;
 using Microsoft.Practices.Prism.Commands;
 
 namespace FolderWatcher.Plugins.Buttons
 {
-    public class ButtonsPluginPart : IPluginPart {
-        public IList<FileAction> Actions { get; set; }
+    public class ButtonsPluginPart : IPluginPart
+    {
         private readonly ButtonsPlugin _plugin;
 
         public ButtonsPluginPart(ButtonsPlugin plugin, IList<FileAction> actions)
@@ -19,11 +16,12 @@ namespace FolderWatcher.Plugins.Buttons
             ExecuteCommand = new DelegateCommand<FileAction>(Execute);
         }
 
-        private async void Execute(FileAction fileAction)
+        public IList<FileAction> Actions { get; set; }
+        public ICommand ExecuteCommand { get; set; }
+
+        private void Execute(FileAction fileAction)
         {
             _plugin.Execute(fileAction);
         }
-
-        public ICommand ExecuteCommand { get; set; }
     }
 }

@@ -1,25 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FolderWatcher.Plugins.Buttons
 {
     /// <summary>
-    /// Interaction logic for Resources.xaml
+    ///     Interaction logic for Resources.xaml
     /// </summary>
-    [Export(typeof(ResourceDictionary))]
+    [Export(typeof (ResourceDictionary))]
     public partial class Resources : ResourceDictionary
     {
         public Resources()

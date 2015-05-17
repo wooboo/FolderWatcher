@@ -8,7 +8,7 @@ using Microsoft.Practices.ServiceLocation;
 namespace FolderWatcher
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
@@ -19,17 +19,15 @@ namespace FolderWatcher
             {
                 var viewName = viewType.FullName;
                 var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
-                var viewModelName = String.Format(CultureInfo.InvariantCulture, "{0}ViewModel, {1}", viewName,
+                var viewModelName = string.Format(CultureInfo.InvariantCulture, "{0}ViewModel, {1}", viewName,
                     viewAssemblyName);
                 viewModelName = viewModelName.Replace("ViewViewModel", "ViewModel");
                 return Type.GetType(viewModelName);
             });
-            ViewModelLocationProvider.SetDefaultViewModelFactory(type =>
-            {
-                return ServiceLocator.Current.GetInstance(type);
-            });
+            ViewModelLocationProvider.SetDefaultViewModelFactory(
+                type => { return ServiceLocator.Current.GetInstance(type); });
             // The boostrapper will create the Shell instance, so the App.xaml does not have a StartupUri.
-            Bootstrapper bootstrapper = new Bootstrapper();
+            var bootstrapper = new Bootstrapper();
             bootstrapper.Run();
         }
     }

@@ -1,12 +1,9 @@
 using System.ComponentModel.Composition;
-using System.IO;
 using FolderWatcher.Common.Plugins;
-using FolderWatcher.Services;
-using Newtonsoft.Json;
 
 namespace FolderWatcher.Plugins.Delay
 {
-    [Export(typeof(IPluginFactory))]
+    [Export(typeof (IPluginFactory))]
     public class DelayPluginFactory : PluginFactoryBase<DelayPlugin, DelayPluginConfig>
     {
         [ImportingConstructor]

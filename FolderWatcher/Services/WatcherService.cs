@@ -1,21 +1,18 @@
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Windows.Threading;
 using FolderWatcher.Core.Services;
 using FolderWatcher.Model;
 using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace FolderWatcher.Services
 {
-    [Export(typeof(IWatcherService))]
+    [Export(typeof (IWatcherService))]
     public class WatcherService : IWatcherService
     {
-
         private readonly IEventAggregator _eventAggregator;
 
         [ImportingConstructor]
-        public WatcherService(Configuration configuration, 
+        public WatcherService(Configuration configuration,
             PluginManager pluginManager,
             IEventAggregator eventAggregator)
         {
@@ -28,14 +25,8 @@ namespace FolderWatcher.Services
                 folderWatcher.Start();
                 Folders.Add(folderWatcher);
             }
-
-
         }
 
-        
-
-
         public ObservableCollection<Folder> Folders { get; set; }
- 
     }
 }
