@@ -1,4 +1,6 @@
 using System.IO;
+using System.Linq;
+using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
 using Microsoft.VisualBasic.FileIO;
@@ -12,16 +14,17 @@ namespace FolderWatcher.Plugins.Files.Delete
         {
         }
 
-
-        public override void OnFileCreated(FileChangeInfo file)
+        public override void OnFilesChange(FileSystemChangeSet fileSystemChangeSet)
         {
-            if (File.GetAttributes(file.FullPath).HasFlag(FileAttributes.Directory))
+            if (fileSystemChangeSet.Added.Any())
             {
-                FileSystem.DeleteDirectory(file.FullPath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
-            }
-            else
-            {
-                FileSystem.DeleteFile(file.FullPath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+                var source = fileSystemChangeSet.Added.Select(o => o.FullPath);
+                ShellLib.ShellFileOperation fo = new ShellLib.ShellFileOperation();
+
+                fo.Operation = ShellLib.ShellFileOperation.FileOperations.FO_DELETE;
+                fo.SourceFiles = source;
+
+                bool RetVal = fo.DoOperation();
             }
         }
 

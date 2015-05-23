@@ -34,5 +34,10 @@ namespace FolderWatcher.Common.Model
             }
             return false;
         }
+
+        public override string ToString()
+        {
+            return $"{Name}";
+        }
     }
 }

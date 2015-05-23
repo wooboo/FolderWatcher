@@ -25,7 +25,7 @@ namespace FolderWatcher.Core.Plugins.Selector
             
             foreach (var mask in Config.Masks)
             {
-                dict[mask.Key] = plugins.Single(o => o.Metadata.InstanceName == mask.Value);
+                dict[mask.Key] = plugins.Single(o => o.Metadata.FullName == mask.Value);
             }
             return dict;
         }
@@ -38,7 +38,7 @@ namespace FolderWatcher.Core.Plugins.Selector
         {
             foreach (var masks in Config.Masks)
             {
-                _plugins[masks.Key].OnFilesChange(new FileSystemChangeSet() {Added = GetFilesOfMask(fileSystemChangeSet.Added, masks.Key)});
+                _plugins[masks.Key].OnFilesChange(new FileSystemChangeSet() {Added = GetFilesOfMask(fileSystemChangeSet.Added, masks.Key).ToList()});
             }
         }
 
