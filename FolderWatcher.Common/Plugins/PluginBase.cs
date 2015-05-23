@@ -1,3 +1,4 @@
+using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 
 namespace FolderWatcher.Common.Plugins
@@ -14,9 +15,29 @@ namespace FolderWatcher.Common.Plugins
         }
 
         public PluginMetadata Metadata { get; }
-        public abstract void OnFileCreated(FileChangeInfo file);
+        public virtual void OnFilesChange(FileSystemChangeSet fileSystemChangeSet)
+        {
+            if (fileSystemChangeSet.Added != null)
+            {
+                foreach (var fileChangeInfo in fileSystemChangeSet.Added)
+                {
+                    OnFileCreated(fileChangeInfo);
+                }
+            }
+            if (fileSystemChangeSet.Deleted != null)
+            {
+                foreach (var path in fileSystemChangeSet.Deleted)
+                {
+                    OnFileDeleted(path);
+                }
+            }
+        }
 
-        public virtual void OnFileDeleted(FileChangeInfo file)
+        public virtual void OnFileCreated(FileChangeInfo file)
+        {
+        }
+
+        public virtual void OnFileDeleted(string file)
         {
         }
     }

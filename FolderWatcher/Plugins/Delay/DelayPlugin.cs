@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows.Threading;
+using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
 using FolderWatcher.Core.Services;
@@ -44,9 +45,9 @@ namespace FolderWatcher.Plugins.Delay
             Config.Save();
         }
 
-        public override void OnFileDeleted(FileChangeInfo file)
+        public override void OnFileDeleted(string file)
         {
-            var state = Config.FileStates.SingleOrDefault(o => o.File.FullPath == file.FullPath);
+            var state = Config.FileStates.SingleOrDefault(o => o.File.FullPath == file);
             if (state != null)
             {
                 Config.FileStates.Remove(state);
@@ -56,18 +57,16 @@ namespace FolderWatcher.Plugins.Delay
 
         public void Sweep()
         {
-            var fileStates = Config.FileStates;
-            for (var i = 0; i < fileStates.Count; i++)
+            var fileStates = Config.FileStates.Where(deletion=> deletion.CreateDate + deletion.DelayAfter <= DateTime.Now).ToList();
+            _plugin.OnFilesChange(new FileSystemChangeSet()
             {
-                var deletion = fileStates[i];
-                if (deletion.CreateDate + deletion.DelayAfter <= DateTime.Now)
-                {
-                    var file = deletion.File;
-                    _plugin.OnFileCreated(file);
+                Added = fileStates.Select(o=>o.File)
+            });
 
-                    fileStates.RemoveAt(i);
-                    i--;
-                }
+            foreach (var toDelete in fileStates)
+            {
+                Config.FileStates.Remove(toDelete);
+
             }
             Config.Save();
         }

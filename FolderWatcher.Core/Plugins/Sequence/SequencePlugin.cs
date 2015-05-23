@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
 using FolderWatcher.Core.Services;
@@ -21,11 +22,11 @@ namespace FolderWatcher.Core.Plugins.Sequence
             return pluginManager.LoadAllPlugins(Config.GetPath(Config.GetName()), Config.Plugins).ToList();
         }
 
-        public override void OnFileCreated(FileChangeInfo file)
+        public override void OnFilesChange(FileSystemChangeSet fileSystemChangeSet)
         {
             foreach (var plugin in _plugins)
             {
-                plugin.OnFileCreated(file);
+                plugin.OnFilesChange(fileSystemChangeSet);
             }
         }
 

@@ -37,13 +37,10 @@ namespace FolderWatcher.Core.Services
 
         private void OnFiles(FileSystemChangeSet fileSystemChangeSet)
         {
-            foreach (var fileChangeInfo in fileSystemChangeSet.Added)
-            {
                 foreach (var plugin in _plugins)
                 {
-                    plugin.OnFileCreated(fileChangeInfo);
+                    plugin.OnFilesChange(fileSystemChangeSet);
                 }
-            }
         }
 
         private string EnsureWatchedPath(string path)
@@ -121,10 +118,9 @@ namespace FolderWatcher.Core.Services
             }
         }
 
-        public async void Start()
+        public void Start()
         {
-            await OnChange();
-            _fsw.EnableRaisingEvents = true;
+            OnChange().ContinueWith(t => _fsw.EnableRaisingEvents = true);
         }
 
         public void Stop()

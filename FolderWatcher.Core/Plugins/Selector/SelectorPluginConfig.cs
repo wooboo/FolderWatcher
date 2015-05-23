@@ -18,7 +18,7 @@ namespace FolderWatcher.Core.Plugins.Selector
         {
         }
 
-        public IDictionary<string, IList<string>> Masks { get; set; } = new Dictionary<string, IList<string>>();
+        public IDictionary<string, string> Masks { get; set; } = new Dictionary<string, string>();
     }
 
 }

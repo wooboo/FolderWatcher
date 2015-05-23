@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
 using FolderWatcher.Core.Services;
@@ -45,7 +46,10 @@ namespace FolderWatcher.Plugins.Buttons
         public void Execute(FileAction fileViewModel)
         {
             _plugins.Single(o => o.Metadata.FullName == fileViewModel.Plugin)
-                .OnFileCreated(new FileChangeInfo(fileViewModel.Path));
+                .OnFilesChange(new FileSystemChangeSet()
+                {
+                    Added = new List<FileChangeInfo> {new FileChangeInfo(fileViewModel.Path)}
+                });
         }
     }
 }

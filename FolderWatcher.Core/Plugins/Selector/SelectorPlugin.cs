@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
 using FolderWatcher.Core.Services;
@@ -10,38 +11,36 @@ namespace FolderWatcher.Core.Plugins.Selector
 {
     public class SelectorPlugin : PluginBase<SelectorPluginConfig>
     {
-        private IDictionary<string, IEnumerable<IPlugin>> _plugins;
+        private IDictionary<string, IPlugin> _plugins;
 
         public SelectorPlugin(SelectorPluginConfig config) : base(config)
         {
             _plugins = LoadPlugins();
         }
-        private IDictionary<string, IEnumerable<IPlugin>> LoadPlugins()
+        private IDictionary<string, IPlugin> LoadPlugins()
         {
-            var dict= new Dictionary<string, IEnumerable<IPlugin>>();
+            var dict= new Dictionary<string, IPlugin>();
             var pluginManager = ServiceLocator.Current.GetInstance<PluginManager>();
+            var plugins = pluginManager.LoadAllPlugins(Config.GetPath(Config.GetName()), Config.Masks.Values.Distinct()).ToList();
+            
             foreach (var mask in Config.Masks)
             {
-                dict[mask.Key] = pluginManager.LoadAllPlugins(Config.GetPath(Config.GetName()), mask.Value).ToList();
+                dict[mask.Key] = plugins.Single(o => o.Metadata.InstanceName == mask.Value);
             }
             return dict;
         }
+        private IEnumerable<FileChangeInfo> GetFilesOfMask(IEnumerable<FileChangeInfo> files,string mask)
+        {
+            return files.Where(o => FitsMask(o.FullPath, mask));
+        }
 
-        public override void OnFileCreated(FileChangeInfo file)
+        public override void OnFilesChange(FileSystemChangeSet fileSystemChangeSet)
         {
             foreach (var masks in Config.Masks)
             {
-                if (FitsMask(file.Name, masks.Key))
-                {
-                    foreach (var plugin in _plugins[masks.Key])
-                    {
-                        plugin.OnFileCreated(file);
-                    }
-                }
-
+                _plugins[masks.Key].OnFilesChange(new FileSystemChangeSet() {Added = GetFilesOfMask(fileSystemChangeSet.Added, masks.Key)});
             }
         }
-
 
         private bool FitsMask(string sFileName, string sFileMask)
         {
