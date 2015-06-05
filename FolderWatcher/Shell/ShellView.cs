@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Windows;
+using FolderWatcher.Model;
 using Microsoft.Practices.Prism.Mvvm;
 
 namespace FolderWatcher.Shell
@@ -11,7 +12,7 @@ namespace FolderWatcher.Shell
     ///     Interaction logic for ShellView.xaml
     /// </summary>
     [Export]
-    public partial class ShellView : Window, IView, IPartImportsSatisfiedNotification
+    public partial class ShellView : Window, IView
     {
         [ImportingConstructor]
         public ShellView([ImportMany] IEnumerable<ResourceDictionary> pluginResources)
@@ -22,8 +23,7 @@ namespace FolderWatcher.Shell
             }
 
             InitializeComponent();
-            SetValue(
-                ViewModelLocator.AutoWireViewModelProperty, true);
+            SetValue(ViewModelLocator.AutoWireViewModelProperty, true);
             System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
             var i = new Icon(Application.GetResourceStream(new Uri("/eye.ico", UriKind.Relative)).Stream);
             ni.Icon = i;
@@ -36,8 +36,13 @@ namespace FolderWatcher.Shell
                 };
         }
 
-        public void OnImportsSatisfied()
+        private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            var viewModel = DataContext as ShellViewModel;
+            if (viewModel != null)
+            {
+                viewModel.SelectedFolder = e.NewValue as FolderViewModel;
+            }
         }
     }
 }

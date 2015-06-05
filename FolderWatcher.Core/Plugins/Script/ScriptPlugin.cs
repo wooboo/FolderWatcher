@@ -21,8 +21,10 @@ namespace FolderWatcher.Core.Plugins.Script
             if (string.IsNullOrWhiteSpace(fileName)
                 && !string.IsNullOrWhiteSpace(_config.Script))
             {
-                fileName = _config.GetPath("scripts", "tmp", fileName + ".cmd");
+                Directory.CreateDirectory(_config.GetPath(_config.GetName()));
+                fileName = _config.GetPath(_config.GetName(), _config.GetName() + ".cmd");
                 File.WriteAllText(fileName, _config.Script);
+                _config.FileName = fileName;
             }
             if (!string.IsNullOrWhiteSpace(fileName))
             {

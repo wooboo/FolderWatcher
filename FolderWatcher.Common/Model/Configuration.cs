@@ -1,18 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
-using Newtonsoft.Json;
 
 namespace FolderWatcher.Common.Model
 {
     [Export]
     public class Configuration
     {
-        public Configuration()
+        IConfigurationStorage _configurationStorage;
+        [ImportingConstructor]
+        public Configuration(IConfigurationStorage configurationStorage)
         {
-            Folders = JsonConvert.DeserializeObject<List<DirectorySettings>>(File.ReadAllText(@"config.json"));
+            _configurationStorage = configurationStorage;
         }
-
+        public void Load()
+        {
+            Folders = _configurationStorage.LoadFolders();
+        }
+        public void Save()
+        {
+            _configurationStorage.SaveFolders(Folders);
+        }
         public IList<DirectorySettings> Folders { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace FolderWatcher.Common.Plugins
         }
         private bool FitsMask(string sFileName, string sFileMask)
         {
-            Regex mask = new Regex(sFileMask.Replace(".", "[.]").Replace("*", ".*").Replace("?", "."));
+            Regex mask = new Regex("^"+sFileMask.Replace(".", "[.]").Replace("*", ".*").Replace("?", ".")+"$");
             return mask.IsMatch(sFileName);
         }
 

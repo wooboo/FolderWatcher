@@ -9,7 +9,7 @@ namespace FolderWatcher.Core.Plugins.Sequence
         {
             
         }
-
+        public override string Description=>"Sequential Plugin";
         public IList<string> Plugins { get; set; } = new List<string>();
 
     }

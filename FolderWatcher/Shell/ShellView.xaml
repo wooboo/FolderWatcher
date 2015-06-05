@@ -158,7 +158,7 @@
         </Grid.RowDefinitions>
         <TreeView Grid.Row="0" ItemsSource="{Binding Folders}" Grid.IsSharedSizeScope="true"
                   HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                  ItemContainerStyle="{DynamicResource TreeViewItemStyle1}">
+                  ItemContainerStyle="{DynamicResource TreeViewItemStyle1}" SelectedItemChanged="TreeView_OnSelectedItemChanged">
             <TreeView.Resources>
                 <HierarchicalDataTemplate
                     DataType="{x:Type model:FolderViewModel}"
@@ -185,8 +185,9 @@
                 </DataTemplate>
             </TreeView.Resources>
         </TreeView>
-        <StackPanel Grid.Row="1">
-            <Button Content="Setup Downloads" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Content="Add" Command="{Binding Add}" />
+            <Button Content="Remove" Command="{Binding Remove}" />
         </StackPanel>
     </Grid>
 </Window>

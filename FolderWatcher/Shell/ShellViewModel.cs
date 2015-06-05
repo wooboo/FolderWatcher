@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;
+using Ookii.Dialogs.Wpf;
 
 namespace FolderWatcher.Shell
 {
@@ -22,13 +24,15 @@ namespace FolderWatcher.Shell
         private readonly IEventAggregator _eventAggregator;
         private readonly IWatcherService _watcherService;
         private ObservableCollection<FolderViewModel> _folders;
+        private FolderViewModel _selectedFolder;
 
         [ImportingConstructor]
         public ShellViewModel(IWatcherService watcherService, IEventAggregator eventAggregator)
         {
             _watcherService = watcherService;
             _eventAggregator = eventAggregator;
-            Setup = new DelegateCommand(SetupDirectory);
+            Add = new DelegateCommand(AddDirectory);
+            Remove = new DelegateCommand(RemoveDirectory, CanRemoveDirectory);
             _eventAggregator.GetEvent<FilesEvent>().Subscribe(o =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
@@ -60,9 +64,36 @@ namespace FolderWatcher.Shell
                         Name = o.Name,
                         FullPath = o.FullPath
                     }));
+            _watcherService.Folders.CollectionChanged += Folders_CollectionChanged;
         }
 
-        public ICommand Setup { get; set; }
+        private void Folders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var o in e.NewItems.OfType<IFolder>())
+                {
+                    Folders.Add(new FolderViewModel
+                    {
+                        Name = o.Name,
+                        FullPath = o.FullPath
+                    });
+                }
+            }else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var oldItem in e.OldItems.OfType<IFolder>())
+                {
+                    var folder = Folders.FirstOrDefault(o => o.FullPath == oldItem.FullPath);
+                    if (folder != null)
+                    {
+                        Folders.Remove(folder);
+                    }
+                }
+            }
+        }
+
+        public ICommand Add { get; set; }
+        public ICommand Remove { get; set; }
 
         public ObservableCollection<FolderViewModel> Folders
         {
@@ -70,10 +101,27 @@ namespace FolderWatcher.Shell
             set { SetProperty(ref _folders, value); }
         }
 
-        private void SetupDirectory()
+        public FolderViewModel SelectedFolder
         {
-            var path = Path.Combine(_folders[0].FullPath, ".watcher");
-            var factories = ServiceLocator.Current.GetAllInstances<IPluginFactory>();
+            get { return _selectedFolder; }
+            set { SetProperty(ref _selectedFolder, value); }
+        }
+
+        private bool CanRemoveDirectory()
+        {
+            return SelectedFolder != null;
+        }
+        private void RemoveDirectory()
+        {
+            
+        }
+        private void AddDirectory()
+        {
+            var dialog = new VistaFolderBrowserDialog();
+            if (dialog.ShowDialog() ?? true)
+            {
+                _watcherService.AddFolder(dialog.SelectedPath);
+            }
         }
     }
 }

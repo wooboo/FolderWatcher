@@ -19,13 +19,11 @@ namespace FolderWatcher
             {
                 var viewName = viewType.FullName;
                 var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
-                var viewModelName = string.Format(CultureInfo.InvariantCulture, "{0}ViewModel, {1}", viewName,
+                var viewModelName = string.Format(CultureInfo.InvariantCulture, "{0}Model, {1}", viewName,
                     viewAssemblyName);
-                viewModelName = viewModelName.Replace("ViewViewModel", "ViewModel");
                 return Type.GetType(viewModelName);
             });
-            ViewModelLocationProvider.SetDefaultViewModelFactory(
-                type => { return ServiceLocator.Current.GetInstance(type); });
+            ViewModelLocationProvider.SetDefaultViewModelFactory(type => ServiceLocator.Current.GetInstance(type));
             // The boostrapper will create the Shell instance, so the App.xaml does not have a StartupUri.
             var bootstrapper = new Bootstrapper();
             bootstrapper.Run();
