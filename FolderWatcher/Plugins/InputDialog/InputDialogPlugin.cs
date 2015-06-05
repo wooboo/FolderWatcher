@@ -9,15 +9,15 @@ using FolderWatcher.Common.Services;
 using FolderWatcher.Core.Services;
 using Microsoft.Practices.ServiceLocation;
 
-namespace FolderWatcher.Plugins.Confirm
+namespace FolderWatcher.Plugins.InputDialog
 {
-    public class ConfirmPlugin : PluginBase<ConfirmPluginConfig>
+    public class InputDialogPlugin : PluginBase<InputDialogPluginConfig>
     {
         private readonly DispatcherTimer _dispatcherTimer;
         private IPlugin _okPlugin;
         private IPlugin _cancelPlugin;
 
-        public ConfirmPlugin(ConfirmPluginConfig config) : base(config)
+        public InputDialogPlugin(InputDialogPluginConfig config) : base(config)
         {
             LoadPlugins();
         }
@@ -46,11 +46,11 @@ namespace FolderWatcher.Plugins.Confirm
                 {
                     Added = items
                 };
-                var confirmPluginWindow = new ConfirmPluginWindow(Config, set);
-                confirmPluginWindow.Owner = App.Current.MainWindow;
-
-                if (confirmPluginWindow.ShowDialog()??false)
+                var inputDialogPluginWindow = new InputDialogPluginWindow(Config, set);
+                inputDialogPluginWindow.Owner = App.Current.MainWindow;
+                if (inputDialogPluginWindow.ShowDialog()??false)
                 {
+                    valueBag.Values[Config.Key] = inputDialogPluginWindow.textBox.Text;
                     OkAction(set, valueBag);
                 }
                 else
@@ -62,7 +62,7 @@ namespace FolderWatcher.Plugins.Confirm
 
         public void Cancel(FileSystemChangeSet fileSystemChangeSet, IValueBag valueBag)
         {
-            _cancelPlugin.OnFilesChange(fileSystemChangeSet, _valueBag);
+            _cancelPlugin.OnFilesChange(fileSystemChangeSet, valueBag);
             foreach (var fileChangeInfo in fileSystemChangeSet.Added)
             {
                 Config.CancelList.Add(fileChangeInfo.FullPath);

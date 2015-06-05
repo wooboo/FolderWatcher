@@ -4,6 +4,7 @@ using System.Linq;
 using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
+using FolderWatcher.Common.Services;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.VisualBasic.FileIO;
@@ -17,7 +18,7 @@ namespace FolderWatcher.Plugins.Files.Extract
         {
         }
 
-        public override void OnFileCreated(FileChangeInfo file)
+        public override void OnFileCreated(FileChangeInfo file, IValueBag valueBag)
         {
             ExtractZipFile(file.FullPath, null, Path.Combine(Path.GetDirectoryName(file.FullPath), Path.GetFileNameWithoutExtension(file.FullPath)));
         }

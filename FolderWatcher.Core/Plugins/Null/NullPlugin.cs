@@ -1,5 +1,6 @@
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
+using FolderWatcher.Common.Services;
 
 namespace FolderWatcher.Core.Plugins.Null
 {
@@ -11,7 +12,7 @@ namespace FolderWatcher.Core.Plugins.Null
         }
 
 
-        public override void OnFileCreated(FileChangeInfo file)
+        public override void OnFileCreated(FileChangeInfo file, IValueBag valueBag)
         {
         }
 

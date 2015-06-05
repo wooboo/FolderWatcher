@@ -4,6 +4,7 @@ using System.Linq;
 using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
+using FolderWatcher.Common.Services;
 using FolderWatcher.Core.Services;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;
@@ -27,7 +28,7 @@ namespace FolderWatcher.Plugins.Buttons
             return pluginManager.LoadAllPlugins(Config.GetPath(Config.GetName()), Config.Buttons.Values).ToList();
         }
 
-        public override void OnFileCreated(FileChangeInfo file)
+        public override void OnFileCreated(FileChangeInfo file, IValueBag valueBag)
         {
             var actions = Config.Buttons.Select(o => new FileAction
             {
@@ -37,19 +38,19 @@ namespace FolderWatcher.Plugins.Buttons
             });
             _eventAggregator.GetEvent<AddPluginPartEvent>().Publish(new AddPluginPart
             {
-                Part = new ButtonsPluginPart(this, actions.ToList()),
+                Part = new ButtonsPluginPart(this, actions.ToList(), valueBag),
                 FilePath = file.FullPath,
                 FolderPath = Path.GetDirectoryName(file.FullPath)
             });
         }
 
-        public void Execute(FileAction fileViewModel)
+        public void Execute(FileAction fileViewModel, IValueBag valueBag)
         {
             _plugins.Single(o => o.Metadata.FullName == fileViewModel.Plugin)
                 .OnFilesChange(new FileSystemChangeSet()
                 {
                     Added = new List<FileChangeInfo> {new FileChangeInfo(fileViewModel.Path)}
-                });
+                }, valueBag);
         }
     }
 }

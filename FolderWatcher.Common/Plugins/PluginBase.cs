@@ -1,5 +1,6 @@
 using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
+using FolderWatcher.Common.Services;
 
 namespace FolderWatcher.Common.Plugins
 {
@@ -7,6 +8,7 @@ namespace FolderWatcher.Common.Plugins
         where TConfig : PluginConfigBase
     {
         protected readonly TConfig Config;
+        protected IValueBag _valueBag;
 
         public PluginBase(TConfig config)
         {
@@ -15,13 +17,13 @@ namespace FolderWatcher.Common.Plugins
         }
 
         public PluginMetadata Metadata { get; }
-        public virtual void OnFilesChange(FileSystemChangeSet fileSystemChangeSet)
+        public virtual void OnFilesChange(FileSystemChangeSet fileSystemChangeSet, IValueBag valueBag)
         {
             if (fileSystemChangeSet.Added != null)
             {
                 foreach (var fileChangeInfo in fileSystemChangeSet.Added)
                 {
-                    OnFileCreated(fileChangeInfo);
+                    OnFileCreated(fileChangeInfo, valueBag);
                 }
             }
             if (fileSystemChangeSet.Deleted != null)
@@ -33,7 +35,7 @@ namespace FolderWatcher.Common.Plugins
             }
         }
 
-        public virtual void OnFileCreated(FileChangeInfo file)
+        public virtual void OnFileCreated(FileChangeInfo file, IValueBag valueBag)
         {
         }
 

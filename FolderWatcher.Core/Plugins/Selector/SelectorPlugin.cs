@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
+using FolderWatcher.Common.Services;
 using FolderWatcher.Core.Services;
 using Microsoft.Practices.ServiceLocation;
 
@@ -34,11 +35,11 @@ namespace FolderWatcher.Core.Plugins.Selector
             return files.Where(o => FitsMask(o.FullPath, mask));
         }
 
-        public override void OnFilesChange(FileSystemChangeSet fileSystemChangeSet)
+        public override void OnFilesChange(FileSystemChangeSet fileSystemChangeSet, IValueBag valueBag)
         {
             foreach (var masks in Config.Masks)
             {
-                _plugins[masks.Key].OnFilesChange(new FileSystemChangeSet() {Added = GetFilesOfMask(fileSystemChangeSet.Added, masks.Key).ToList()});
+                _plugins[masks.Key].OnFilesChange(new FileSystemChangeSet() {Added = GetFilesOfMask(fileSystemChangeSet.Added, masks.Key).ToList()}, valueBag);
             }
         }
 

@@ -34,6 +34,7 @@ namespace FolderWatcher.Common.Model
             {
                 Properties.Settings.Default.Folders.Add(directorySettingse.Path);
             }
+            Properties.Settings.Default.Save();
         }
     }
 }

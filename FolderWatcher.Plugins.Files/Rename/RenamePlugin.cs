@@ -3,6 +3,7 @@ using System.Linq;
 using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
+using FolderWatcher.Common.Services;
 using Microsoft.VisualBasic.FileIO;
 
 namespace FolderWatcher.Plugins.Files.Rename
@@ -14,7 +15,7 @@ namespace FolderWatcher.Plugins.Files.Rename
         {
         }
 
-        public override void OnFilesChange(FileSystemChangeSet fileSystemChangeSet)
+        public override void OnFilesChange(FileSystemChangeSet fileSystemChangeSet, IValueBag valueBag)
         {
             if (fileSystemChangeSet.Added.Any())
             {

@@ -3,6 +3,7 @@ using System.Linq;
 using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
+using FolderWatcher.Common.Services;
 using FolderWatcher.Core.Services;
 using Microsoft.Practices.ServiceLocation;
 
@@ -22,11 +23,11 @@ namespace FolderWatcher.Core.Plugins.Sequence
             return pluginManager.LoadAllPlugins(Config.GetPath(Config.GetName()), Config.Plugins).ToList();
         }
 
-        public override void OnFilesChange(FileSystemChangeSet fileSystemChangeSet)
+        public override void OnFilesChange(FileSystemChangeSet fileSystemChangeSet, IValueBag valueBag)
         {
             foreach (var plugin in _plugins)
             {
-                plugin.OnFilesChange(fileSystemChangeSet);
+                plugin.OnFilesChange(fileSystemChangeSet, valueBag);
             }
         }
 

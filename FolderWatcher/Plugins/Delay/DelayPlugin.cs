@@ -4,6 +4,7 @@ using System.Windows.Threading;
 using FolderWatcher.Common.Events;
 using FolderWatcher.Common.Model;
 using FolderWatcher.Common.Plugins;
+using FolderWatcher.Common.Services;
 using FolderWatcher.Core.Services;
 using Microsoft.Practices.ServiceLocation;
 
@@ -34,13 +35,14 @@ namespace FolderWatcher.Plugins.Delay
             Sweep();
         }
 
-        public override void OnFileCreated(FileChangeInfo file)
+        public override void OnFileCreated(FileChangeInfo file, IValueBag valueBag)
         {
             Config.FileStates.Add(new FileState
             {
                 CreateDate = DateTime.Now,
                 File = file,
-                DelayAfter = Config.DelayDelay
+                DelayAfter = Config.DelayDelay,
+                ValueBag = valueBag
             });
             Config.Save();
         }
@@ -61,7 +63,7 @@ namespace FolderWatcher.Plugins.Delay
             _plugin.OnFilesChange(new FileSystemChangeSet()
             {
                 Added = fileStates.Select(o=>o.File)
-            });
+            }, fileStates.FirstOrDefault()?.ValueBag);
 
             foreach (var toDelete in fileStates)
             {

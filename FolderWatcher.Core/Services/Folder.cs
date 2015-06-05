@@ -39,7 +39,8 @@ namespace FolderWatcher.Core.Services
         {
                 foreach (var plugin in _plugins)
                 {
-                    plugin.OnFilesChange(fileSystemChangeSet);
+                    IValueBag valueBag = new ValueBag();
+                    plugin.OnFilesChange(fileSystemChangeSet, valueBag);
                 }
         }
 
@@ -128,5 +129,14 @@ namespace FolderWatcher.Core.Services
             _fsw.EnableRaisingEvents = false;
         }
 
+    }
+
+    public class ValueBag : IValueBag
+    {
+        public ValueBag()
+        {
+            Values = new Dictionary<string, string>();
+        }
+        public IDictionary<string, string> Values { get; }
     }
 }
